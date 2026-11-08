@@ -89,7 +89,7 @@ Data is kept on the phone and is cleared when the app is uninstalled or its stor
 
 Every push to `main` runs the [Android build and release workflow](.github/workflows/android-build.yml).
 It runs the core Java and English/Spanish translation checks, builds and verifies the signed APK, and publishes a `main-build-N` GitHub prerelease, following [Stayput's workflow](https://github.com/Ausmosphere/Stayput-App/blob/main/.github/workflows/android-build.yml).
-Download `OhMyMedications.apk` from [GitHub Releases](https://github.com/Ausmosphere/oh-my-medications/releases).
+Download `OhMyMedications.apk` from [GitHub Releases](https://github.com/ax9-labs/oh-my-medications/releases).
 Each release also includes `SHA256SUMS.txt` and `build-info.txt` identifying the source commit and workflow run.
 The workflow can also be started manually from the Actions tab on `main`.
 
