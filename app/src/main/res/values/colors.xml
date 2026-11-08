@@ -11,4 +11,8 @@
     <color name="progress_track">#D9EDFC</color>
     <color name="nav_selection">#DCEFFD</color>
     <color name="nav_surface">#FFFFFF</color>
+    <color name="chart_on_time">#397E67</color>
+    <color name="chart_outside">#7855B1</color>
+    <color name="chart_skipped">#B15D49</color>
+    <color name="chart_unlogged">#7B8192</color>
 </resources>

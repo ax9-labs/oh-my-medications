@@ -24,14 +24,15 @@ public final class AlarmActivity extends LocalizedActivity {
         setVolumeControlStream(AudioManager.STREAM_ALARM);
         LinearLayout root=new LinearLayout(this);root.setOrientation(LinearLayout.VERTICAL);root.setGravity(Gravity.CENTER);root.setBackground(new AmbientBackground());
         int pad=dp(28);root.setPadding(pad,pad,pad,pad);
-        root.setOnApplyWindowInsetsListener((v,i)->{v.setPadding(pad+i.getSystemWindowInsetLeft(),pad+i.getSystemWindowInsetTop(),pad+i.getSystemWindowInsetRight(),pad+i.getSystemWindowInsetBottom());return i;});
+        ScrollView viewport=new ScrollView(this);viewport.setFillViewport(true);viewport.addView(root,new ScrollView.LayoutParams(-1,-2));
+        viewport.setOnApplyWindowInsetsListener((v,i)->{v.setPadding(i.getSystemWindowInsetLeft(),i.getSystemWindowInsetTop(),i.getSystemWindowInsetRight(),i.getSystemWindowInsetBottom());return i;});
         label(root,getString(R.string.app_name).toUpperCase(AppLocale.locale(this)),14,colors.accentInk);space(root,24);label(root,getString(R.string.alarm_title),32,colors.ink);space(root,16);
         label(root,getString(R.string.alarm_due),19,colors.muted);space(root,36);
         button(root,getString(R.string.stop_alarm),true,()->{AlarmService.stop(this);finish();});space(root,14);
         button(root,getString(R.string.stop_open_tracker),false,()->{AlarmService.stop(this);startActivity(new Intent(this,MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP));finish();});
         space(root,22);label(root,getString(R.string.alarm_stop_hint),14,colors.muted);
         if(getSystemService(AudioManager.class).getStreamVolume(AudioManager.STREAM_ALARM)==0){space(root,20);label(root,getString(R.string.alarm_muted),15,0xFF8F4C10);}
-        setContentView(root);root.requestApplyInsets();
+        setContentView(viewport);viewport.requestApplyInsets();
     }
     @Override protected void onResume(){super.onResume();handler.post(watch);}
     @Override protected void onPause(){handler.removeCallbacks(watch);super.onPause();}
@@ -39,5 +40,5 @@ public final class AlarmActivity extends LocalizedActivity {
     private int dp(int n){return (int)(n*getResources().getDisplayMetrics().density+0.5f);}
     private void space(LinearLayout l,int n){l.addView(new View(this),new LinearLayout.LayoutParams(1,dp(n)));}
     private void label(LinearLayout l,String value,int size,int color){TextView t=new TextView(this);t.setText(value);t.setTextSize(size);t.setTextColor(color);t.setGravity(Gravity.CENTER);if(size>=30)t.setTypeface(null,Typeface.BOLD);l.addView(t,new LinearLayout.LayoutParams(-1,-2));}
-    private void button(LinearLayout l,String value,boolean primary,Runnable action){Button b=new Button(this);b.setText(value);b.setTextSize(18);b.setAllCaps(false);b.setTextColor(primary?colors.ink:colors.accentInk);GradientDrawable bg=new GradientDrawable();bg.setColor(primary?colors.accent:colors.pale);bg.setCornerRadius(dp(18));b.setBackground(bg);b.setPadding(dp(12),dp(12),dp(12),dp(12));b.setMinHeight(dp(68));b.setOnClickListener(v->action.run());l.addView(b,new LinearLayout.LayoutParams(-1,-2));}
+    private void button(LinearLayout l,String value,boolean primary,Runnable action){Button b=new Button(this);b.setText(value);b.setTextSize(18);b.setAllCaps(false);b.setTextColor(primary?colors.ink:colors.accentInk);GradientDrawable bg=new GradientDrawable();bg.setColor(primary?colors.accent:colors.pale);bg.setCornerRadius(dp(18));b.setBackground(UiKit.interactive(this,bg,18));b.setPadding(dp(12),dp(12),dp(12),dp(12));b.setMinHeight(dp(68));b.setOnClickListener(v->action.run());l.addView(b,new LinearLayout.LayoutParams(-1,-2));}
 }

@@ -98,12 +98,12 @@
     <string name="test_alarm_hint">La prueba suena hasta que la detengas. Usa el volumen de alarma del teléfono. No se registrará ninguna dosis.</string>
     <string name="send_test_notification">Enviar notificación de prueba</string>
     <string name="on_this_phone">EN ESTE TELÉFONO</string>
-    <string name="privacy_text">Los datos de tus medicamentos se guardan en este teléfono. Med Tracker no tiene cuentas, acceso a internet, anuncios ni análisis de uso. Al desinstalar la aplicación se eliminan sus datos. Puedes exportar el historial de dosis desde la pestaña Historial.</string>
-    <string name="alarm_behavior_text">Las alarmas usan el volumen de alarma y respetan los ajustes de No molestar. Con el teléfono bloqueado puede aparecer la pantalla de alarma si se permiten las alarmas a pantalla completa; con el teléfono desbloqueado puede aparecer una notificación. Detener una alarma nunca registra una dosis. Si fuerzas la detención de Med Tracker, vuelve a abrirla para restaurar las alarmas.</string>
+    <string name="privacy_text">Los datos de tus medicamentos se guardan en este teléfono. Oh my Medications! no tiene cuentas, acceso a internet, anuncios ni análisis de uso. Al desinstalar la aplicación se eliminan sus datos. Puedes exportar el historial de dosis desde la pestaña Historial.</string>
+    <string name="alarm_behavior_text">Las alarmas usan el volumen de alarma y respetan los ajustes de No molestar. Con el teléfono bloqueado puede aparecer la pantalla de alarma si se permiten las alarmas a pantalla completa; con el teléfono desbloqueado puede aparecer una notificación. Detener una alarma nunca registra una dosis. Si fuerzas la detención de Oh my Medications!, vuelve a abrirla para restaurar las alarmas.</string>
     <string name="settings_privacy">Ajustes y privacidad</string>
     <string name="done">Listo</string>
     <string name="alarm_start_failed">Android no pudo iniciar la alarma. Revisa los ajustes de la aplicación.</string>
-    <string name="test_notification_title">Las notificaciones de Med Tracker están listas</string>
+    <string name="test_notification_title">Las notificaciones de Oh my Medications! están listas</string>
     <string name="test_notification_text">Esta es una notificación de prueba. No se ha registrado ninguna dosis.</string>
     <string name="test_notification_sent">Notificación de prueba enviada</string>
     <string name="no_document_provider">No hay ningún proveedor de documentos disponible en este teléfono</string>
@@ -121,7 +121,7 @@
     <string name="alarm_channel">Alarmas sonoras de medicamentos</string>
     <string name="alarm_channel_description">Pantalla de alarma y control para detenerla; el sonido usa el volumen de alarma del teléfono</string>
     <string name="dose_due_title">Es la hora de una dosis programada</string>
-    <string name="dose_due_fallback">Abre Med Tracker. Android no pudo iniciar la alarma sonora; revisa los permisos de alarma.</string>
+    <string name="dose_due_fallback">Abre Oh my Medications! Android no pudo iniciar la alarma sonora; revisa los permisos de alarma.</string>
     <string name="selected_description">%1$s, seleccionado</string>
     <plurals name="taken_progress"><item quantity="one">%1$d de %2$d tomada</item><item quantity="other">%1$d de %2$d tomadas</item></plurals>
     <string name="pending_summary">"%1$s  ·  %2$s"</string>
@@ -172,8 +172,8 @@
     <plurals name="pending_count"><item quantity="one">%1$d sin registrar</item><item quantity="other">%1$d sin registrar</item></plurals>
     <plurals name="skipped_count"><item quantity="one">%1$d omitida</item><item quantity="other">%1$d omitidas</item></plurals>
     <plurals name="active_medications"><item quantity="one">%1$d medicamento activo · horarios diarios</item><item quantity="other">%1$d medicamentos activos · horarios diarios</item></plurals>
-    <string name="csv_filename">med-tracker-historial-%1$s.csv</string>
-    <string name="welcome_title">Bienvenido a Med Tracker</string>
+    <string name="csv_filename">oh-my-medications-historial-%1$s.csv</string>
+    <string name="welcome_title">Bienvenido a Oh my Medications!</string>
     <string name="welcome_subtitle">Preparemos tus alarmas.</string>
     <string name="welcome_body">Dos ajustes de Android ayudan a que las alarmas de tus medicamentos suenen a tiempo y aparezcan sobre la pantalla de bloqueo.</string>
     <string name="welcome_precise_title">Alarmas a tiempo</string>
@@ -246,4 +246,9 @@
     <string name="csv_timezone">Zona horaria programada</string>
     <string name="csv_difference">Diferencia en minutos</string>
     <string name="on_time_window">Dentro de ±30 minutos</string>
+    <string name="discard_changes_title">¿Descartar los cambios?</string>
+    <string name="discard_changes_hint">Los cambios del medicamento no se han guardado.</string>
+    <string name="keep_editing">Seguir editando</string>
+    <string name="discard_changes">Descartar cambios</string>
+    <string name="no_timing_data">No hay dosis con hora registrada en este período</string>
 </resources>

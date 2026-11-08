@@ -1,4 +1,4 @@
-# Med Tracker
+# Oh my Medications!
 
 A personal, offline Android medication tracker with a calendar schedule, treatment progress, actual taken times, accuracy dashboard, ringing alarms and English/Spanish support. Version 2.0. Android 8.0 (API 26) or later.
 
@@ -72,7 +72,7 @@ Icons appear beside medications in Schedule, Medications and History. Existing m
 - CSV export through Android’s file picker.
 - Repeating alarm sound and vibration with a foreground alarm notification and Stop action.
 - Alarm screen that can appear over the lock screen when Android permits full-screen alarms. Its text contains no medication names.
-- Exact dose times registered with Android’s alarm-clock scheduling API. The system may show an upcoming-alarm indicator; these are managed by Med Tracker and are not entries in the Google Clock app’s alarm list.
+- Exact dose times registered with Android’s alarm-clock scheduling API. The system may show an upcoming-alarm indicator; these are managed by Oh my Medications! and are not entries in the Google Clock app’s alarm list.
 - Multiple simultaneous due doses share one alarm sound. Stopping the sound never marks any dose taken or skipped.
 - A bundled fallback alarm tone if the default system alarm tone is unavailable.
 - Reminder restoration after restarting the phone, changing time or timezone, updating the app, and reopening the app.
@@ -84,6 +84,36 @@ This version supports daily schedules. It does not support as-needed, weekly, in
 Alarms follow the phone’s local time. A nonexistent time during the spring daylight-saving transition moves forward by the DST gap; a repeated time during fall is scheduled once at its first occurrence. Allow notifications and precise alarms for scheduled ringing. Without precise alarm access Android may delay delivery or prevent background ringing, in which case the app attempts a notification prompting you to check permissions. Phone alarm volume and Do Not Disturb settings control whether audio is audible; the app does not override them. Force-stopping the app disables pending alarms until it is reopened. Keep following your prescribed instructions; this app records your choices and does not calculate doses or advise whether to take a dose.
 
 Data is kept on the phone and is cleared when the app is uninstalled or its storage is cleared. CSV exports are separate files at the destination you choose and may contain health information. They are a history report, not a complete app backup.
+
+## Automated APK releases
+
+Every push to `main` runs the [Android build and release workflow](.github/workflows/android-build.yml).
+It runs the core Java and English/Spanish translation checks, builds and verifies the signed APK, and publishes a `main-build-N` GitHub prerelease, following [Stayput's workflow](https://github.com/Ausmosphere/Stayput-App/blob/main/.github/workflows/android-build.yml).
+Download `OhMyMedications.apk` from [GitHub Releases](https://github.com/Ausmosphere/oh-my-medications/releases).
+Each release also includes `SHA256SUMS.txt` and `build-info.txt` identifying the source commit and workflow run.
+The workflow can also be started manually from the Actions tab on `main`.
+
+The repository secret `ANDROID_DEBUG_KEYSTORE_BASE64` holds this project's existing `.local/med-tracker.keystore` encoded as base64.
+Use this app's key, rather than another app's key, and keep it stable so subsequent APKs can update earlier builds.
+The workflow fails if the secret is absent and checks the APK certificate against the restored key before publication.
+The signing key is excluded from source control and downloadable artifacts.
+These are development builds for personal testing.
+
+## Build and run on Windows
+
+Install Java 21, Python 3 with the `py` launcher, and Android SDK Platform 35 with Build Tools 35.0.0.
+Start an Android emulator, then run these commands in PowerShell:
+
+```powershell
+.\build.ps1
+adb -e install -r dist/med-tracker.apk
+adb -e shell am start -n com.personal.medtracker/.MainActivity
+```
+
+The build runs the translation validator and pure Java tests before creating the APK.
+Pass `-AndroidSdk C:\path\to\sdk` if the SDK is outside `%LOCALAPPDATA%\Android\Sdk`.
+Pass `-AndroidTests` to also build the instrumentation APK, then use the disposable-emulator commands below.
+The APK filename and package ID remain stable across the rename to Oh my Medications! so existing installations can be updated using their original signing key.
 
 ## Build and test on Linux
 

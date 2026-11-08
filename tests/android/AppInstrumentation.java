@@ -15,18 +15,19 @@ public final class AppInstrumentation extends Instrumentation {
     private int count;
     private Activity activity;
     private volatile Activity resumedMain;
-    private boolean navOnly,gallery;
+    private boolean navOnly,gallery,uiAudit;
     private String permissionScenario,testLanguage="en";
     @Override public void callActivityOnResume(Activity a){super.callActivityOnResume(a);if(a instanceof MainActivity)resumedMain=a;}
     private final StringBuilder report=new StringBuilder();
     private void check(boolean value,String label) { if(!value) throw new AssertionError(label); count++; report.append("PASS: ").append(label).append('\n');android.util.Log.i("MedTrackerTests","PASS: "+label); }
-    @Override public void onCreate(Bundle args) { super.onCreate(args);navOnly=args!=null&&"true".equals(args.getString("navOnly"));if(args!=null){gallery="true".equals(args.getString("gallery"));permissionScenario=args.getString("permissionState");testLanguage=args.getString("testLocale","en");}start(); }
+    @Override public void onCreate(Bundle args) { super.onCreate(args);navOnly=args!=null&&"true".equals(args.getString("navOnly"));if(args!=null){uiAudit="true".equals(args.getString("uiAudit"));gallery="true".equals(args.getString("gallery"));permissionScenario=args.getString("permissionState");testLanguage=args.getString("testLocale","en");}start(); }
     @Override public void onStart() {
         Bundle results=new Bundle();
         try {
             Context c=getTargetContext();AppLocale.set(c,testLanguage);waitForIdleSync();reset(c);c.getSystemService(NotificationManager.class).cancelAll();
             if(permissionScenario!=null){permissionFlow(c);results.putString("stream",report.toString()+"PASS: "+count+" alarm permission flow checks\n");finish(Activity.RESULT_OK,results);return;}
             if(gallery){gallery(c);results.putString("stream",report.toString()+"PASS: gallery captured\n");finish(Activity.RESULT_OK,results);return;}
+            if(uiAudit){uiAudit(c);results.putString("stream",report.toString()+"PASS: "+count+" UI audit checks\n");finish(Activity.RESULT_OK,results);return;}
             permissionPolicy();migration(c);tracking(c);
             if(navOnly){activity=startActivitySync(new Intent(c,MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));waitForIdleSync();navigation(c);runOnMainSync(()->activity.finish());results.putString("stream",report.toString()+"PASS: "+count+" focused navigation and migration checks\n");finish(Activity.RESULT_OK,results);return;}
             check(AppLocale.supported(c,"fr").equals("en"),"Unsupported languages fall back to English");
@@ -126,7 +127,7 @@ public final class AppInstrumentation extends Instrumentation {
             check(iconDescription("med-icon-preview").equals("Tablet icon, Rose"),"Editing restores the saved icon selection");
             click("Choose icon");clickTag("icon-type-syrup");clickTag("icon-color-default");click("Use this icon");click("Save");
             try(Store s=new Store(c)){check(s.meds().get(0).iconType.equals("syrup")&&s.meds().get(0).iconColor.equals("default"),"An existing medication can return to a type's default color");check(s.events(day).get(0).iconType.equals("tablet")&&s.events(day).get(0).iconColor.equals("rose"),"Changing an icon preserves historical icon snapshots");}
-            click("Edit medication");click("Choose icon");clickTag("icon-type-package");clickTag("icon-color-blue");click("Use this icon");click("Cancel");
+            click("Edit medication");click("Choose icon");clickTag("icon-type-package");clickTag("icon-color-blue");click("Use this icon");click("Cancel");click("Discard changes");
             try(Store s=new Store(c)){check(s.meds().get(0).iconType.equals("syrup")&&s.meds().get(0).iconColor.equals("default"),"Canceling medication editing does not overwrite its saved appearance");}
             File screenshot=new File(c.getExternalFilesDir(null),"medications.png");
             final Bitmap[] image=new Bitmap[1];runOnMainSync(()->{View v=activity.getWindow().getDecorView();image[0]=Bitmap.createBitmap(v.getWidth(),v.getHeight(),Bitmap.Config.ARGB_8888);v.draw(new android.graphics.Canvas(image[0]));});
@@ -136,7 +137,7 @@ public final class AppInstrumentation extends Instrumentation {
             // Leave the emulator clean, matching the APK's first-run state.
             reset(c);
             results.putString("stream",report.toString()+"PASS: "+count+" Android integration checks\n");finish(Activity.RESULT_OK,results);
-        } catch(Throwable ex) {StringWriter sw=new StringWriter();ex.printStackTrace(new PrintWriter(sw));results.putString("stream",report.toString()+"FAIL: "+sw);finish(Activity.RESULT_CANCELED,results);}
+        } catch(Throwable ex) {android.util.Log.e("MedTrackerTests","Instrumentation failed",ex);StringWriter sw=new StringWriter();ex.printStackTrace(new PrintWriter(sw));results.putString("stream",report.toString()+"FAIL: "+sw);finish(Activity.RESULT_CANCELED,results);}
     }
     private void permissionPolicy(){
         check(AlarmPermissions.shouldWelcome(false,false),"Welcome appears when both alarm permissions are missing");
@@ -186,6 +187,9 @@ public final class AppInstrumentation extends Instrumentation {
         runOnMainSync(()->activity.finish());waitForIdleSync();
     }
     private void navigation(Context c)throws Exception{
+        String originalScale=shell("settings get global animator_duration_scale").trim();
+        shell("settings put global animator_duration_scale 0");waitMotion(false);
+        try {
         View decor=activity.getWindow().getDecorView();FloatingNavBar bar=decor.findViewWithTag("floating-navigation");FrameLayout host=decor.findViewWithTag("page-host");
         check(bar!=null&&bar.getElevation()>0,"Navigation is a floating elevated surface");
         View selection=bar.findViewWithTag("nav-selection");check(selection.getWidth()>bar.getWidth()/5&&selection.getHeight()>bar.getHeight()/2,"Selected tab pill has visible measured bounds on the first layout");
@@ -194,7 +198,8 @@ public final class AppInstrumentation extends Instrumentation {
         clickTag("nav-tab-3");check(find("Your history starts here")!=null,"History opens immediately with animations disabled");
         check(bar==activity.getWindow().getDecorView().findViewWithTag("floating-navigation"),"Tab switching preserves the same navigation bar");
         runOnMainSync(()->bar.findViewWithTag("nav-tab-0").performClick());waitForIdleSync();
-        android.os.ParcelFileDescriptor fd=getUiAutomation().executeShellCommand("settings put global animator_duration_scale 1");try(InputStream in=new android.os.ParcelFileDescriptor.AutoCloseInputStream(fd)){while(in.read()!=-1){}}
+        // Shell commands need no accessibility session and must not suspend existing services.
+        shell("settings put global animator_duration_scale 1");
         long until=SystemClock.uptimeMillis()+10000;do{runOnMainSync(()->enabled[0]=FloatingNavBar.motionEnabled());if(enabled[0])break;SystemClock.sleep(100);}while(SystemClock.uptimeMillis()<until);
         check(enabled[0],"Navigation enables transitions when system animations are enabled");
         runOnMainSync(()->{bar.findViewWithTag("nav-tab-1").performClick();bar.findViewWithTag("nav-tab-3").performClick();bar.findViewWithTag("nav-tab-0").performClick();bar.findViewWithTag("nav-tab-3").performClick();});
@@ -204,10 +209,16 @@ public final class AppInstrumentation extends Instrumentation {
         final boolean[] settled=new boolean[1];runOnMainSync(()->settled[0]=host.getChildAt(0).getAlpha()==1&&host.getChildAt(0).getTranslationX()==0);check(settled[0],"Selected page finishes fully visible and aligned");
         View selected=bar.findViewWithTag("nav-tab-3");check(selected.isSelected()&&selected.getContentDescription().toString().contains("History"),"Icon navigation exposes the selected tab to accessibility services");
         runOnMainSync(()->bar.findViewWithTag("nav-tab-0").performClick());waitNavigation();snapshot(c,"floating-nav-en.png",decor);
-        fd=getUiAutomation().executeShellCommand("settings put global animator_duration_scale 0");try(InputStream in=new android.os.ParcelFileDescriptor.AutoCloseInputStream(fd)){while(in.read()!=-1){}}
+        shell("settings put global animator_duration_scale 0");
         until=SystemClock.uptimeMillis()+10000;do{runOnMainSync(()->enabled[0]=FloatingNavBar.motionEnabled());if(!enabled[0])break;SystemClock.sleep(100);}while(SystemClock.uptimeMillis()<until);
         check(!enabled[0],"Motion can be disabled again without affecting navigation");
+        }finally{shell("null".equals(originalScale)?"settings delete global animator_duration_scale":"settings put global animator_duration_scale "+originalScale);}
     }
+    private String shell(String command)throws IOException{
+        android.os.ParcelFileDescriptor fd=getUiAutomation(android.app.UiAutomation.FLAG_DONT_USE_ACCESSIBILITY).executeShellCommand(command);
+        try(InputStream in=new android.os.ParcelFileDescriptor.AutoCloseInputStream(fd);ByteArrayOutputStream out=new ByteArrayOutputStream()){byte[] buffer=new byte[1024];int n;while((n=in.read(buffer))!=-1)out.write(buffer,0,n);return out.toString("UTF-8");}
+    }
+    private void waitMotion(boolean expected){long until=SystemClock.uptimeMillis()+10000;final boolean[] value={false};do{runOnMainSync(()->value[0]=FloatingNavBar.motionEnabled());if(value[0]==expected)return;SystemClock.sleep(100);}while(SystemClock.uptimeMillis()<until);throw new AssertionError("System animation preference did not update");}
     private void waitNavigation(){
         long until=SystemClock.uptimeMillis()+15000;final boolean[] done=new boolean[1];
         do{runOnMainSync(()->{View root=activity.getWindow().getDecorView();FloatingNavBar nav=root.findViewWithTag("floating-navigation");FrameLayout host=root.findViewWithTag("page-host");done[0]=!nav.animating()&&host.getChildCount()==1&&host.getChildAt(0).getAlpha()==1&&host.getChildAt(0).getTranslationX()==0;});if(done[0])return;SystemClock.sleep(50);}while(SystemClock.uptimeMillis()<until);
@@ -316,6 +327,9 @@ public final class AppInstrumentation extends Instrumentation {
         clickTag("settings-entry");click("Language: English");selectLanguage(1,"Hoy");click("Resumen");snapshot(c,"v2-dashboard-es.png",activity.getWindow().getDecorView());click("Calendario");snapshot(c,"v2-schedule-es.png",activity.getWindow().getDecorView());runOnMainSync(()->activity.finish());reset(c);
     }
     private void snapshot(Context c,String name,View root){
+        if(root.findViewWithTag("floating-navigation")!=null)waitNavigation();
+        // Let treatment and chart reveals finish before recording a visual reference.
+        if(FloatingNavBar.motionEnabled())SystemClock.sleep(850);
         final Bitmap[] b=new Bitmap[1];runOnMainSync(()->{b[0]=Bitmap.createBitmap(root.getWidth(),root.getHeight(),Bitmap.Config.ARGB_8888);root.draw(new android.graphics.Canvas(b[0]));});
         try(FileOutputStream f=new FileOutputStream(new File(c.getExternalFilesDir(null),name))){b[0].compress(Bitmap.CompressFormat.PNG,100,f);}catch(IOException ex){throw new AssertionError(ex);}
     }
@@ -339,7 +353,7 @@ public final class AppInstrumentation extends Instrumentation {
         long until=SystemClock.uptimeMillis()+20000;do{final boolean[] value=new boolean[1];runOnMainSync(()->value[0]=AlarmService.playing());if(value[0])return true;SystemClock.sleep(100);}while(SystemClock.uptimeMillis()<until);return false;
     }
     private View activeRoot() {
-        for(String field:new String[]{"timeEditor","languageDialog","settingsDialog"})try{java.lang.reflect.Field f=MainActivity.class.getDeclaredField(field);f.setAccessible(true);AlertDialog d=(AlertDialog)f.get(activity);if(d!=null&&d.isShowing())return d.getWindow().getDecorView();}catch(ReflectiveOperationException e){throw new AssertionError(e);}
+        for(String field:new String[]{"discardDialog","timeEditor","languageDialog","settingsDialog"})try{java.lang.reflect.Field f=MainActivity.class.getDeclaredField(field);f.setAccessible(true);AlertDialog d=(AlertDialog)f.get(activity);if(d!=null&&d.isShowing())return d.getWindow().getDecorView();}catch(NoSuchFieldException e){continue;}catch(ReflectiveOperationException e){throw new AssertionError(e);}
         try{java.lang.reflect.Field f=MainActivity.class.getDeclaredField("iconPicker");f.setAccessible(true);AlertDialog d=(AlertDialog)f.get(activity);if(d!=null&&d.isShowing())return d.getWindow().getDecorView();}catch(ReflectiveOperationException e){throw new AssertionError(e);}
         try {java.lang.reflect.Field f=MainActivity.class.getDeclaredField("editor");f.setAccessible(true);AlertDialog d=(AlertDialog)f.get(activity);if(d!=null&&d.isShowing())return d.getWindow().getDecorView();}
         catch(ReflectiveOperationException e){throw new AssertionError(e);}return activity.getWindow().getDecorView();
@@ -350,7 +364,46 @@ public final class AppInstrumentation extends Instrumentation {
         if(v instanceof ViewGroup){ViewGroup g=(ViewGroup)v;for(int i=0;i<g.getChildCount();i++){View result=match(g.getChildAt(i),value);if(result!=null)return result;}}return null;
     }
     private View find(String value) {final View[] out=new View[1];runOnMainSync(()->out[0]=match(activeRoot(),value));return out[0];}
-    private void click(String value) {runOnMainSync(()->{View root=activeRoot(),bar=root.findViewWithTag("floating-navigation");View n=bar==null?null:match(bar,value);if(n==null)n=match(root,value);if(n==null)throw new AssertionError("Missing control: "+value);if(!n.performClick())throw new AssertionError("Could not click: "+value);});waitForIdleSync();}
+    private void click(String value) {runOnMainSync(()->{View root=activeRoot(),bar=root.findViewWithTag("floating-navigation");View n=bar==null?null:match(bar,value);if(n==null)n=match(root,value);if(n==null)throw new AssertionError("Missing control: "+value);while(!n.isClickable()&&n.getParent() instanceof View)n=(View)n.getParent();if(!n.performClick())throw new AssertionError("Could not click: "+value);});waitForIdleSync();}
     private void setText(EditText n,String value) {runOnMainSync(()->n.setText(value));waitForIdleSync();}
+    private void uiAudit(Context c)throws Exception{
+        activity=startActivitySync(new Intent(c,MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));waitForIdleSync();
+        click("Add medication");List<EditText> fields=new ArrayList<>();runOnMainSync(()->collectEdits(activeRoot(),fields));
+        snapshot(c,"audit-form-before.png",activeRoot());
+        final boolean[] labeled={true};runOnMainSync(()->{for(EditText field:fields)labeled[0]&=field.getId()!=View.NO_ID&&hasLabel(activeRoot(),field.getId());});
+        check(labeled[0],"Every visible medication input has an associated persistent label");
+        setText(fields.get(0),"Draft medication");click("Cancel");
+        check(find("Discard changes?")!=null,"Canceling a changed medication asks before discarding it");click("Keep editing");
+        check(find("Draft medication")!=null,"Keeping a draft preserves entered text");
+        java.lang.reflect.Field edit=MainActivity.class.getDeclaredField("editor");edit.setAccessible(true);runOnMainSync(()->{try{((AlertDialog)edit.get(activity)).cancel();}catch(IllegalAccessException e){throw new AssertionError(e);}});waitForIdleSync();
+        check(find("Discard changes?")!=null,"Android dialog cancellation also protects a changed draft");click("Discard changes");
+        try(Store s=new Store(c)){check(s.meds().isEmpty(),"Discarding a draft never saves a medication");}
+        click("Add medication");click("Cancel");check(find("A little breathing room")!=null,"Unchanged forms close without a discard prompt");
+        click("Dashboard");waitNavigation();check(find("YOUR PATTERNS")!=null,"Dashboard uses the shared page heading hierarchy");
+        Button seven=(Button)find("7 days"),thirty=(Button)find("30 days");check(seven.isSelected()&&!thirty.isSelected(),"Dashboard range exposes its selected state");click("30 days");
+        check(find("30 days").isSelected()&&!find("7 days").isSelected(),"Changing the dashboard range updates selection semantics");
+        click("Schedule");waitNavigation();View calendar=find("Go to a date");
+        check(calendar.createAccessibilityNodeInfo().getClassName().toString().equals(Button.class.getName()),"Icon actions expose a native button role");
+        for(int tab=0;tab<4;tab++){
+            clickTag("nav-tab-"+tab);waitNavigation();ViewGroup item=activity.getWindow().getDecorView().findViewWithTag("nav-tab-"+tab);final boolean[] readable={false};
+            runOnMainSync(()->{for(int i=0;i<item.getChildCount();i++)if(item.getChildAt(i) instanceof TextView){TextView label=(TextView)item.getChildAt(i);readable[0]=label.getLayout()!=null&&label.getLayout().getEllipsisCount(0)==0;if(!readable[0])report.append("Navigation label: ").append(label.getText()).append(" width=").append(label.getWidth()).append(" textSize=").append(label.getTextSize()).append('\n');}});
+            check(readable[0],"Selected navigation label remains complete for tab "+tab);
+        }
+        try(Store s=new Store(c)){
+            android.database.sqlite.SQLiteDatabase db=s.getWritableDatabase();db.beginTransaction();try{
+                for(int i=0;i<200;i++)db.execSQL("INSERT INTO events(med,day,time,name,dose,status,recorded) VALUES(99,?,'08:00',?,'1','taken',123)",new Object[]{LocalDate.now().minusDays(i).toString(),"History item "+i});
+                db.setTransactionSuccessful();
+            }finally{db.endTransaction();}
+        }
+        clickTag("nav-tab-0");clickTag("nav-tab-3");waitNavigation();ListView history=activity.getWindow().getDecorView().findViewWithTag("history-feed");
+        check(history!=null&&history.getCount()==201&&history.getChildCount()<20,"Long histories mount only visible native list rows");
+        runOnMainSync(()->history.setSelectionFromTop(200,0));long historyUntil=SystemClock.uptimeMillis()+5000;while(find("History item 199")==null&&SystemClock.uptimeMillis()<historyUntil){SystemClock.sleep(50);waitForIdleSync();}check(find("History item 199")!=null,"The final entry in a long history remains reachable");
+        Activity alarm=startActivitySync(new Intent(c,AlarmActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));waitForIdleSync();
+        ViewGroup alarmContent=alarm.findViewById(android.R.id.content);check(alarmContent.getChildAt(0) instanceof ScrollView,"Alarm controls use a scrollable viewport on compact screens");
+        View stop=match(alarm.getWindow().getDecorView(),"Stop alarm");runOnMainSync(()->stop.requestRectangleOnScreen(new android.graphics.Rect(0,0,stop.getWidth(),stop.getHeight()),true));waitForIdleSync();
+        android.graphics.Rect visible=new android.graphics.Rect();check(stop.getGlobalVisibleRect(visible)&&visible.height()==stop.getHeight(),"The entire alarm stop control can be brought into view");runOnMainSync(()->alarm.finish());
+        runOnMainSync(()->activity.finish());reset(c);
+    }
+    private boolean hasLabel(View v,int id){if(v.getLabelFor()==id)return true;if(v instanceof ViewGroup){ViewGroup g=(ViewGroup)v;for(int i=0;i<g.getChildCount();i++)if(hasLabel(g.getChildAt(i),id))return true;}return false;}
     private void collectEdits(View v,List<EditText> out) {if(v instanceof EditText)out.add((EditText)v);if(v instanceof ViewGroup){ViewGroup g=(ViewGroup)v;for(int i=0;i<g.getChildCount();i++)collectEdits(g.getChildAt(i),out);}}
 }

@@ -43,7 +43,7 @@ print('PASS: app language choices match Android locale registration; English is 
 # Any English prose still present in UI classes must be an explicitly internal diagnostic.
 allowed={'No output stream','Alarm audio unavailable; vibration and stop notification remain active'}
 for name in ['MainActivity','AlarmActivity','AlarmService','Reminders','MedAppearance','MedIconView','FloatingNavBar','HistoryExport','AlarmPermissions','ScheduleFeed','TimingText','UiKit','AdherenceChart','AnimatedLine']:
-    source=(root/f'app/src/main/java/com/personal/medtracker/{name}.java').read_text()
+    source=(root/f'app/src/main/java/com/personal/medtracker/{name}.java').read_text(encoding='utf-8')
     for token in re.findall(r'"(?:[^"\\]|\\.)*"',source):
         assert not re.search(r'[A-Za-z]{2,} [A-Za-z]{2,}',token[1:-1]) or token[1:-1] in allowed, f'{name}: hard-coded UI prose {token}'
 print('PASS: UI, icon descriptions and notification classes contain no hard-coded English prose')

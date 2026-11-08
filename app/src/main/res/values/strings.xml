@@ -98,12 +98,12 @@
     <string name="test_alarm_hint">The test rings until you stop it. Use your phone’s alarm volume. No dose will be logged.</string>
     <string name="send_test_notification">Send a test notification</string>
     <string name="on_this_phone">ON THIS PHONE</string>
-    <string name="privacy_text">Your medication data is saved locally. Med Tracker has no account, internet access, ads, or analytics. Uninstalling the app clears its data. You can export dose history from the History tab.</string>
-    <string name="alarm_behavior_text">Alarms use alarm volume and follow your Do Not Disturb settings. A locked phone can show the alarm screen when full-screen alarms are allowed; an unlocked phone may show an alarm notification. Stopping an alarm never logs a dose. Open Med Tracker after force-stopping it to restore alarms.</string>
+    <string name="privacy_text">Your medication data is saved locally. Oh my Medications! has no account, internet access, ads, or analytics. Uninstalling the app clears its data. You can export dose history from the History tab.</string>
+    <string name="alarm_behavior_text">Alarms use alarm volume and follow your Do Not Disturb settings. A locked phone can show the alarm screen when full-screen alarms are allowed; an unlocked phone may show an alarm notification. Stopping an alarm never logs a dose. Open Oh my Medications! after force-stopping it to restore alarms.</string>
     <string name="settings_privacy">Settings &amp; privacy</string>
     <string name="done">Done</string>
     <string name="alarm_start_failed">Android could not start the alarm. Please check app settings.</string>
-    <string name="test_notification_title">Med Tracker notifications are ready</string>
+    <string name="test_notification_title">Oh my Medications! notifications are ready</string>
     <string name="test_notification_text">This is a test notification. No dose has been logged.</string>
     <string name="test_notification_sent">Test notification sent</string>
     <string name="no_document_provider">No document provider is available on this phone</string>
@@ -121,8 +121,8 @@
     <string name="alarm_channel">Ringing medication alarms</string>
     <string name="alarm_channel_description">Alarm screen and stop control; the alarm plays through your phone’s alarm volume</string>
     <string name="dose_due_title">Scheduled dose is due</string>
-    <string name="dose_due_fallback">Open Med Tracker. Android could not start the ringing alarm; check alarm permissions.</string>
-    <string name="app_name" translatable="false">Med Tracker</string>
+    <string name="dose_due_fallback">Open Oh my Medications! Android could not start the ringing alarm; check alarm permissions.</string>
+    <string name="app_name" translatable="false">Oh my Medications!</string>
     <string name="version_name" translatable="false">2.0</string>
     <string name="selected_description">%1$s, selected</string>
     <plurals name="taken_progress"><item quantity="one">%1$d of %2$d taken</item><item quantity="other">%1$d of %2$d taken</item></plurals>
@@ -174,8 +174,8 @@
     <plurals name="pending_count"><item quantity="one">%1$d not logged</item><item quantity="other">%1$d not logged</item></plurals>
     <plurals name="skipped_count"><item quantity="one">%1$d skipped</item><item quantity="other">%1$d skipped</item></plurals>
     <plurals name="active_medications"><item quantity="one">%1$d active medication · daily schedules</item><item quantity="other">%1$d active medications · daily schedules</item></plurals>
-    <string name="csv_filename">med-tracker-history-%1$s.csv</string>
-    <string name="welcome_title">Welcome to Med Tracker</string>
+    <string name="csv_filename">oh-my-medications-history-%1$s.csv</string>
+    <string name="welcome_title">Welcome to Oh my Medications!</string>
     <string name="welcome_subtitle">Let’s get your alarms ready.</string>
     <string name="welcome_body">Two Android settings help your medication alarms arrive on time and show over the lock screen.</string>
     <string name="welcome_precise_title">On-time alarms</string>
@@ -248,4 +248,9 @@
     <string name="csv_timezone">Schedule time zone</string>
     <string name="csv_difference">Difference in minutes</string>
     <string name="on_time_window">Within ±30 minutes</string>
+    <string name="discard_changes_title">Discard changes?</string>
+    <string name="discard_changes_hint">Your medication changes have not been saved.</string>
+    <string name="keep_editing">Keep editing</string>
+    <string name="discard_changes">Discard changes</string>
+    <string name="no_timing_data">No timed doses in this date range</string>
 </resources>
