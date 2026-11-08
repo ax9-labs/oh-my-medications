@@ -9,7 +9,7 @@ Your medication data stays on your phone, with no account, ads, analytics, or in
 
 **Android 8.0+ · Version 2.0 · English & Español**
 
-**[Download the APK](https://github.com/ax9-labs/oh-my-medications/releases)** · [Features](#features) · [Screenshots](#screenshots) · [Get started](#get-started) · [Complete guide](docs/GUIDE.md)
+**[Website](https://oh-my-medications.com/)** · **[Download the APK](https://github.com/ax9-labs/oh-my-medications/releases)** · [Features](#features) · [Screenshots](#screenshots) · [Get started](#get-started) · [Complete guide](docs/GUIDE.md)
 
 ## Screenshots
 
