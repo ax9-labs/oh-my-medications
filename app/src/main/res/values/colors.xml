@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="background">#F6F4FC</color>
+    <color name="ink">#292635</color>
+    <color name="muted">#6D687C</color>
+    <color name="accent">#9DD6FA</color>
+    <color name="accent_ink">#205F8C</color>
+    <color name="accent_control">#2979AF</color>
+    <color name="pale">#EEEAFA</color>
+    <color name="line">#E4DFEF</color>
+    <color name="progress_track">#D9EDFC</color>
+    <color name="nav_selection">#DCEFFD</color>
+    <color name="nav_surface">#FFFFFF</color>
+</resources>

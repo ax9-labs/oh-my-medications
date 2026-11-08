@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Keep tags and native display names in the same order when adding a language. -->
+    <string-array name="language_tags" translatable="false"><item>en</item><item>es</item></string-array>
+    <string-array name="language_names" translatable="false"><item>English</item><item>Español</item></string-array>
+</resources>
