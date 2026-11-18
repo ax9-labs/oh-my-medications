@@ -20,6 +20,7 @@ final class Store extends SQLiteOpenHelper {
     static final class Slot {
         long med,scheduledAt;String day,time,name,dose,iconType,iconColor,zone;boolean tracked;Event event;
         String key(){return Schedule.key(med,day,time);}
+        boolean canSkip(LocalDate today){return !LocalDate.parse(day).isAfter(today);}
     }
     Store(Context c) { this(c,"med-tracker.db"); }
     Store(Context c,String databaseName) { super(c,databaseName,null,3); }
@@ -129,9 +130,12 @@ final class Store extends SQLiteOpenHelper {
     }
     boolean recordSlot(Slot slot,String status,long takenAt){
         if (!status.equals("taken") && !status.equals("skipped")) throw new IllegalArgumentException("Invalid status");
-        long now=System.currentTimeMillis();if(LocalDate.parse(slot.day).isAfter(LocalDate.now())||takenAt>now+1000||("taken".equals(status)&&takenAt<=0))throw new IllegalArgumentException("Future log");
+        long now=System.currentTimeMillis();
+        boolean taken=status.equals("taken");
+        boolean eligible=taken?Schedule.canLogTaken(slot.scheduledAt,now):slot.canSkip(LocalDate.now());
+        if(!eligible||takenAt>now+1000||(taken&&takenAt<=0))throw new IllegalArgumentException("Invalid dose log time");
         ContentValues v = new ContentValues(); v.put("med",slot.med); v.put("day",slot.day); v.put("time",slot.time); v.put("name",slot.name); v.put("dose",slot.dose); v.put("status",status); v.put("recorded",now);
-        v.put("icon_type",slot.iconType);v.put("icon_color",slot.iconColor);v.put("scheduled_at",slot.scheduledAt);v.put("timezone",slot.zone);v.put("taken_at","taken".equals(status)?takenAt:0);v.put("timing_source","confirmed");
+        v.put("icon_type",slot.iconType);v.put("icon_color",slot.iconColor);v.put("scheduled_at",slot.scheduledAt);v.put("timezone",slot.zone);v.put("taken_at",taken?takenAt:0);v.put("timing_source","confirmed");
         return getWritableDatabase().insertWithOnConflict("events",null,v,SQLiteDatabase.CONFLICT_IGNORE) != -1;
     }
     void updateTakenTime(Event e,long time){

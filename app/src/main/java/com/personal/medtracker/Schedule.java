@@ -7,7 +7,14 @@ import java.util.*;
 
 /** Calendar-day schedules follow the device's local timezone, including DST. */
 public final class Schedule {
+    private static final long EARLY_LOG_WINDOW_MS = Duration.ofHours(12).toMillis();
+
     private Schedule() {}
+
+    public static boolean canLogTaken(long scheduledAt, long now) {
+        return scheduledAt <= now + EARLY_LOG_WINDOW_MS;
+    }
+
     public static List<String> parseTimes(String raw) {
         TreeSet<String> times = new TreeSet<>();
         for (String token : raw.split(",")) {

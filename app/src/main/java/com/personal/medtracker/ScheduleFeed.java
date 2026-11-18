@@ -62,13 +62,26 @@ final class ScheduleFeed extends ListView {
         TextView dot=t("●",10,slot.event!=null?getContext().getColor(R.color.chart_on_time):colors.accentInk,false);dot.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);if(!compact)time.addView(dot);r.addView(time,new LinearLayout.LayoutParams(compact?-1:dp(80),-2));if(compact)gap(r,6);
         LinearLayout card=col();card.setTag("dose-"+slot.key());card.setPadding(dp(14),dp(14),dp(14),dp(13));card.setBackground(next!=null&&slot.key().equals(next.key())?UiKit.glowCard(getContext()):UiKit.surface(getContext()));
         LinearLayout name=row();MedIconView icon=new MedIconView(getContext(),slot.iconType,slot.iconColor);icon.setTag("medication-icon");LinearLayout.LayoutParams ip=new LinearLayout.LayoutParams(dp(37),dp(37));ip.rightMargin=dp(9);name.addView(icon,ip);LinearLayout words=col();words.addView(t(slot.name,17,colors.ink,true));words.addView(t(slot.dose,12,colors.muted,false));name.addView(words,new LinearLayout.LayoutParams(0,-2,1));card.addView(name);gap(card,10);
-        boolean future=LocalDate.parse(slot.day).isAfter(LocalDate.now());
         if(slot.event!=null){Store.Event e=slot.event;card.addView(t(s(e.status.equals("taken")?R.string.taken_badge:R.string.skipped_badge),13,colors.ink,true));if(e.takenAt>0){gap(card,4);card.addView(t(s(R.string.actual_at,AppLocale.timestamp(getContext(),e.takenAt)),11,colors.muted,false));card.addView(t(TimingText.difference(getContext(),e),11,colors.muted,false));}
             LinearLayout buttons=row();buttons.setGravity(Gravity.RIGHT);if(e.status.equals("taken"))UiKit.addAction(buttons,getContext(),IconGlyph.Kind.CLOCK,s(R.string.edit_taken_time),false,()->actions.time(slot));UiKit.addAction(buttons,getContext(),IconGlyph.Kind.UNDO,s(R.string.undo),false,()->actions.undo(e));card.addView(buttons);
-        }else if(future){card.addView(t(s(R.string.future_dose),12,colors.muted,false));}
-        else{
-            String status=!slot.tracked&&slot.scheduledAt<System.currentTimeMillis()?s(R.string.untracked_slot):slot.scheduledAt+Adherence.WINDOW_MS<System.currentTimeMillis()?s(R.string.not_logged):s(R.string.scheduled_unlogged);card.addView(t(status,12,colors.muted,false));gap(card,8);
-            LinearLayout buttons=row();buttons.setGravity(Gravity.RIGHT);UiKit.addAction(buttons,getContext(),IconGlyph.Kind.SKIP,s(R.string.skip),false,()->actions.skip(slot));UiKit.addAction(buttons,getContext(),IconGlyph.Kind.CLOCK,s(R.string.log_different_time),false,()->actions.time(slot));UiKit.addAction(buttons,getContext(),IconGlyph.Kind.CHECK,s(R.string.log_taken_now),true,()->actions.taken(slot));card.addView(buttons);
+        }else{
+            long now=System.currentTimeMillis();
+            boolean canLogTaken=Schedule.canLogTaken(slot.scheduledAt,now);
+            boolean canSkip=slot.canSkip(LocalDate.now());
+            int status=R.string.scheduled_unlogged;
+            if(!canLogTaken)status=R.string.taken_window;
+            else if(!slot.tracked&&slot.scheduledAt<now)status=R.string.untracked_slot;
+            else if(slot.scheduledAt+Adherence.WINDOW_MS<now)status=R.string.not_logged;
+            card.addView(t(s(status),12,colors.muted,false));
+            if(canLogTaken||canSkip){
+                gap(card,8);LinearLayout buttons=row();buttons.setGravity(Gravity.RIGHT);
+                if(canSkip)UiKit.addAction(buttons,getContext(),IconGlyph.Kind.SKIP,s(R.string.skip),false,()->actions.skip(slot));
+                if(canLogTaken){
+                    UiKit.addAction(buttons,getContext(),IconGlyph.Kind.CLOCK,s(R.string.log_different_time),false,()->actions.time(slot));
+                    UiKit.addAction(buttons,getContext(),IconGlyph.Kind.CHECK,s(R.string.log_taken_now),true,()->actions.taken(slot));
+                }
+                card.addView(buttons);
+            }
         }
         r.addView(card,compact?new LinearLayout.LayoutParams(-1,-2):new LinearLayout.LayoutParams(0,-2,1));l.addView(r);return l;
     }

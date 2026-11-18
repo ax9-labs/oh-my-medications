@@ -213,11 +213,24 @@ public final class MainActivity extends LocalizedActivity {
     private void markSlot(Store.Slot slot,String status){
         Runnable action=()->saveSlot(slot,status,System.currentTimeMillis());
         if(status.equals("skipped"))new AlertDialog.Builder(this).setTitle(getString(R.string.skip_confirm_title)).setMessage(getString(R.string.skip_confirm_text,slot.name,timeLabel(slot.time))).setNegativeButton(R.string.cancel,null).setPositiveButton(R.string.log_skipped,(d,w)->action.run()).show();
-        else if(slot.scheduledAt>System.currentTimeMillis())new AlertDialog.Builder(this).setTitle(R.string.upcoming_confirm_title).setMessage(getString(R.string.upcoming_confirm_text,timeLabel(slot.time))).setNegativeButton(R.string.cancel,null).setPositiveButton(R.string.already_taken,(d,w)->action.run()).show();else action.run();
+        else if(slot.scheduledAt>System.currentTimeMillis()){
+            String date=AppLocale.date(this,LocalDate.parse(slot.day),false);
+            new AlertDialog.Builder(this).setTitle(R.string.upcoming_confirm_title)
+                .setMessage(getString(R.string.upcoming_confirm_text,date,timeLabel(slot.time)))
+                .setNegativeButton(R.string.cancel,null)
+                .setPositiveButton(R.string.already_taken,(d,w)->action.run()).show();
+        }else action.run();
     }
     private void saveSlot(Store.Slot slot,String status,long actual){
-        if(LocalDate.parse(slot.day).isAfter(LocalDate.now())){toast(getString(R.string.future_dose));return;}
-        Store.Slot current=store.slot(slot.med,slot.day,slot.time);if(current==null){render();toast(getString(R.string.schedule_changed));return;}boolean saved=store.recordSlot(current,status,actual);Reminders.dismiss(this,slot.med,slot.time);render();toast(getString(saved?(status.equals("taken")?R.string.logged_taken:R.string.logged_skipped):R.string.already_logged));
+        Store.Slot current=store.slot(slot.med,slot.day,slot.time);
+        if(current==null){render();toast(getString(R.string.schedule_changed));return;}
+        long now=System.currentTimeMillis();boolean taken=status.equals("taken");
+        if(taken&&!Schedule.canLogTaken(current.scheduledAt,now)){render();toast(getString(R.string.taken_window));return;}
+        if(!taken&&!current.canSkip(LocalDate.now())){render();toast(getString(R.string.future_dose));return;}
+        boolean saved=store.recordSlot(current,status,actual);
+        // A ringing alarm at this time may belong to an earlier day's dose.
+        if(current.scheduledAt<=now)Reminders.dismiss(this,current.med,current.time);
+        render();toast(getString(saved?(taken?R.string.logged_taken:R.string.logged_skipped):R.string.already_logged));
     }
     private void takenTime(Store.Slot slot,Store.Event event){
         long initial=event!=null&&event.takenAt>0?event.takenAt:System.currentTimeMillis();final LocalDateTime[] chosen={LocalDateTime.ofInstant(Instant.ofEpochMilli(initial),ZoneId.systemDefault()).withSecond(0).withNano(0)};

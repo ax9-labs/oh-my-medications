@@ -126,7 +126,7 @@
     <plurals name="taken_progress"><item quantity="one">%1$d de %2$d tomada</item><item quantity="other">%1$d de %2$d tomadas</item></plurals>
     <string name="pending_summary">"%1$s  ·  %2$s"</string>
     <string name="skip_confirm_text">%1$s · %2$s\nSe guardará tu elección en el historial.</string>
-    <string name="upcoming_confirm_text">Esta dosis está programada para las %1$s. Márcala como tomada solo si ya la has tomado.</string>
+    <string name="upcoming_confirm_text">Esta dosis está programada para el %1$s a las %2$s. Márcala como tomada solo si ya la has tomado.</string>
     <string name="remove_log_text">%1$s · %2$s a las %3$s\nLa dosis dejará de estar marcada como %4$s.</string>
     <string name="status_taken">tomada</string>
     <string name="status_skipped">omitida</string>
@@ -202,6 +202,7 @@
     <string name="actual_at">Tomada · %1$s</string>
     <string name="edit_taken_time">Indicar hora real de la toma</string>
     <string name="future_dose">Día próximo</string>
+    <string name="taken_window">Puedes marcar esta dosis como tomada hasta 12 horas antes de la hora programada.</string>
     <string name="untracked_slot">Anterior al inicio del seguimiento</string>
     <string name="not_logged">Sin registrar</string>
     <string name="log_different_time">Registrar otra hora de toma</string>

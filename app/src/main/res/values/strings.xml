@@ -128,7 +128,7 @@
     <plurals name="taken_progress"><item quantity="one">%1$d of %2$d taken</item><item quantity="other">%1$d of %2$d taken</item></plurals>
     <string name="pending_summary">"%1$s  ·  %2$s"</string>
     <string name="skip_confirm_text">%1$s · %2$s\nThis records your choice in history.</string>
-    <string name="upcoming_confirm_text">This dose is scheduled for %1$s. Mark it taken only if you have already taken it.</string>
+    <string name="upcoming_confirm_text">This dose is scheduled for %1$s at %2$s. Mark it taken only if you have already taken it.</string>
     <string name="remove_log_text">%1$s · %2$s at %3$s\nThe dose will no longer be marked %4$s.</string>
     <string name="status_taken">taken</string>
     <string name="status_skipped">skipped</string>
@@ -204,6 +204,7 @@
     <string name="actual_at">Taken · %1$s</string>
     <string name="edit_taken_time">Set actual taken time</string>
     <string name="future_dose">Upcoming day</string>
+    <string name="taken_window">You can mark this dose taken up to 12 hours before its scheduled time.</string>
     <string name="untracked_slot">Before tracking began</string>
     <string name="not_logged">Not logged</string>
     <string name="log_different_time">Log a different taken time</string>

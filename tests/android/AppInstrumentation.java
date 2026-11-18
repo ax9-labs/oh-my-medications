@@ -28,7 +28,7 @@ public final class AppInstrumentation extends Instrumentation {
             if(permissionScenario!=null){permissionFlow(c);results.putString("stream",report.toString()+"PASS: "+count+" alarm permission flow checks\n");finish(Activity.RESULT_OK,results);return;}
             if(gallery){gallery(c);results.putString("stream",report.toString()+"PASS: gallery captured\n");finish(Activity.RESULT_OK,results);return;}
             if(uiAudit){uiAudit(c);results.putString("stream",report.toString()+"PASS: "+count+" UI audit checks\n");finish(Activity.RESULT_OK,results);return;}
-            permissionPolicy();migration(c);tracking(c);
+            permissionPolicy();migration(c);tracking(c);earlyLogging(c);
             if(navOnly){activity=startActivitySync(new Intent(c,MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));waitForIdleSync();navigation(c);runOnMainSync(()->activity.finish());results.putString("stream",report.toString()+"PASS: "+count+" focused navigation and migration checks\n");finish(Activity.RESULT_OK,results);return;}
             check(AppLocale.supported(c,"fr").equals("en"),"Unsupported languages fall back to English");
             check(AppLocale.supported(c,"es-MX").equals("es"),"Regional Spanish falls back to the shared Spanish translation");
@@ -115,7 +115,7 @@ public final class AppInstrumentation extends Instrumentation {
             check(iconDescription("medication-icon").equals("Tablet icon, Rose"),"Today shows the saved medication icon");
             click("Mark taken now");waitForIdleSync();
             try(Store s=new Store(c)) {check(s.events(day).size()==1&&s.events(day).get(0).status.equals("taken")&&Math.abs(s.events(day).get(0).takenAt-System.currentTimeMillis())<60000,"Schedule action records actual taken time");}
-            runOnMainSync(()->((ScheduleFeed)activity.getWindow().getDecorView().findViewWithTag("schedule-feed")).jumpTo(LocalDate.now().plusDays(40)));waitForIdleSync();check(find("Upcoming day")==null,"Finished treatment has no future dose cards");click("Medications");click("Schedule");ScheduleFeed restored=activity.getWindow().getDecorView().findViewWithTag("schedule-feed");check(!restored.lastDay().isBefore(LocalDate.now().plusDays(40)),"Calendar range survives switching tabs");runOnMainSync(()->restored.jumpTo(LocalDate.now()));waitForIdleSync();snapshot(c,"schedule-en.png",activity.getWindow().getDecorView());
+            runOnMainSync(()->((ScheduleFeed)activity.getWindow().getDecorView().findViewWithTag("schedule-feed")).jumpTo(LocalDate.now().plusDays(40)));waitForIdleSync();check(find("UI verification medication")==null,"Finished treatment has no future dose cards");click("Medications");click("Schedule");ScheduleFeed restored=activity.getWindow().getDecorView().findViewWithTag("schedule-feed");check(!restored.lastDay().isBefore(LocalDate.now().plusDays(40)),"Calendar range survives switching tabs");runOnMainSync(()->restored.jumpTo(LocalDate.now()));waitForIdleSync();snapshot(c,"schedule-en.png",activity.getWindow().getDecorView());
             click("History");waitForIdleSync();click("Set actual taken time");check(find("Record when you actually took this dose. This changes the timing record, while keeping the original log date.")!=null,"Actual-time editor explains its audit behavior");click("Save");
             check(find("Dose history")!=null,"History tab opens");check(find("UI verification medication")!=null,"History shows the logged medication");
             check(iconDescription("medication-icon").equals("Tablet icon, Rose"),"History shows the icon captured when the dose was logged");
@@ -311,9 +311,30 @@ public final class AppInstrumentation extends Instrumentation {
             s.getWritableDatabase().execSQL("INSERT INTO events(med,day,time,name,dose,status,recorded) VALUES(99,?,'08:00','Legacy','1','taken',123)",new Object[]{today.toString()});Store.Event legacy=null;for(Store.Event v:s.events(null))if(v.med==99)legacy=v;
             check(legacy!=null&&legacy.takenAt==0,"Legacy log remains explicitly untimed");Adherence.Report r=Adherence.summarize(s.samples(today,today),today,today,now);check(r.taken==2&&r.knownTiming==1,"Dashboard counts old logs without inventing their accuracy");s.updateTakenTime(legacy,Treatment.scheduled(today.toString(),"08:00",ZoneId.systemDefault())>now?now:Treatment.scheduled(today.toString(),"08:00",ZoneId.systemDefault()));r=Adherence.summarize(s.samples(today,today),today,today,now);check(r.knownTiming==2,"A confirmed legacy actual time becomes eligible for accuracy");
             Store.Med absent=new Store.Med();absent.name="Unopened routine";absent.dose="1";absent.notes="";absent.times="01:00";absent.startDay=today.minusDays(5).toString();s.save(absent);long enrolled=today.minusDays(5).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();s.getWritableDatabase().delete("plans","med=?",new String[]{""+absent.id});s.getWritableDatabase().execSQL("UPDATE meds SET enrolled_at=?,revision_at=?,generated_through=? WHERE id=?",new Object[]{enrolled,enrolled,today.minusDays(3).toString(),absent.id});absent.times="22:00";s.save(absent);check(s.slot(absent.id,today.minusDays(2).toString(),"01:00")!=null&&s.slot(absent.id,today.minusDays(2).toString(),"01:00").tracked,"Editing after an absence first preserves old expected doses");
-            boolean futureLog=false;Store.Slot tomorrow=s.slot(absent.id,today.plusDays(1).toString(),"22:00");try{s.recordSlot(tomorrow,"taken",now);}catch(IllegalArgumentException ex){futureLog=true;}check(futureLog,"Future-day logging is rejected by storage");
+            boolean futureLog=false;Store.Slot tomorrow=s.slot(absent.id,today.plusDays(1).toString(),"22:00");try{s.recordSlot(tomorrow,"taken",now);}catch(IllegalArgumentException ex){futureLog=true;}check(futureLog,"Storage rejects taken logs more than 12 hours early");
             Store.Med ended=new Store.Med();ended.name="Ended";ended.dose="1";ended.notes="";ended.times="08:00";ended.startDay=today.minusDays(5).toString();ended.durationDays=2;ended.reminders=true;s.save(ended);Reminders.schedule(c,ended,"08:00");check(Treatment.next("08:00",ended.startDay,ended.durationDays,now,ZoneId.systemDefault())<0,"Completed treatments do not schedule a new alarm");
         }c.deleteDatabase(name);
+    }
+    private void earlyLogging(Context c){
+        String name="early-logging-test.db";c.deleteDatabase(name);
+        TimeZone previous=TimeZone.getDefault();
+        int utcHour=LocalTime.now(ZoneOffset.UTC).getHour();
+        // Put the process in a time zone where midnight is a few hours away.
+        TimeZone.setDefault(TimeZone.getTimeZone(ZoneOffset.ofHours(Math.floorMod(21-utcHour+12,24)-12)));
+        try(Store s=new Store(c,name)){
+            LocalDate today=LocalDate.now(),tomorrow=today.plusDays(1);
+            Store.Med m=new Store.Med();m.name="Midnight dose";m.dose="1";m.notes="";m.times="00:00";s.save(m);
+            Store.Slot slot=s.slot(m.id,tomorrow.toString(),"00:00");
+            long now=System.currentTimeMillis();
+            check(slot!=null&&slot.scheduledAt>now,"The next midnight dose is scheduled for tomorrow");
+            boolean skipped=false;
+            try{s.recordSlot(slot,"skipped",0);}catch(IllegalArgumentException ex){skipped=true;}
+            check(skipped,"A next-day dose cannot be marked skipped early");
+            check(s.recordSlot(slot,"taken",now),"Storage accepts a midnight dose taken the preceding evening");
+            Store.Event event=s.events(tomorrow.toString()).get(0);
+            check(event.takenAt==now&&event.scheduledAt==slot.scheduledAt,"Early logging keeps the actual time and scheduled midnight distinct");
+            check(!s.handled(m.id,today.toString(),"00:00")&&s.handled(m.id,tomorrow.toString(),"00:00"),"Only tomorrow's midnight dose is marked taken");
+        }finally{TimeZone.setDefault(previous);c.deleteDatabase(name);}
     }
     private void gallery(Context c)throws Exception{
         LocalDate today=LocalDate.now();long now=System.currentTimeMillis();

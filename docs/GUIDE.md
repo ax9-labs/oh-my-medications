@@ -36,7 +36,8 @@ No past missing doses are invented.
    **Stop & open tracker** silences it and opens your schedule.
 7. In **Schedule**, use the **check** icon after taking a dose; it saves the current time as the actual taken time.
    The **clock** icon records a different actual time, and **×** records a skipped dose after confirmation.
-   Future-day logging is disabled; logging a dose early today asks for confirmation.
+   You can mark doses taken up to 12 hours early, including doses scheduled after midnight.
+   The check icon asks for confirmation and shows the scheduled date and time when you log early.
    Logging the ringing dose silences its alarm.
    The **undo** icon removes an accidental entry.
 
