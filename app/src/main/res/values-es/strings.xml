@@ -111,6 +111,7 @@
     <string name="export_failed">No se pudo exportar el historial. Elige otra ubicación.</string>
     <string name="alarm_title">Alarma de medicamento</string>
     <string name="alarm_due">Es la hora de una dosis programada.</string>
+    <string name="alarm_test_title">Alarma de prueba</string>
     <string name="stop_alarm">Detener alarma</string>
     <string name="stop_open_tracker">Detener y abrir la aplicación</string>
     <string name="alarm_stop_hint">Detener la alarma no registra una dosis.\nRevisa tu horario antes de tomar el medicamento.</string>

@@ -12,14 +12,24 @@ import java.util.*;
 public final class AlarmService extends Service {
     static final int NOTIFICATION_ID=71;
     private static volatile AlarmService current;
-    private final Set<String> slots=new HashSet<>();
+    private final Map<String,RingingDose> doses=new LinkedHashMap<>();
     private final Handler handler=new Handler(Looper.getMainLooper());
     private MediaPlayer player;
     private AudioManager audio;
     private AudioFocusRequest focus;
     private Vibrator vibrator;
-    private boolean hasFocus,usingFallback;
+    private boolean hasFocus,usingFallback,testRinging;
     private static final AudioAttributes ATTRS=new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build();
+
+    static final class RingingDose {
+        final String name,dose,time;
+
+        RingingDose(Store.Med medication,String time) {
+            this.name=medication.name;
+            this.dose=medication.dose;
+            this.time=time;
+        }
+    }
 
     static boolean start(Context c,long id,String day,String time,boolean test) {
         Intent i=new Intent(c,AlarmService.class).putExtra("med",id).putExtra("day",day).putExtra("time",time).putExtra("test",test);
@@ -27,15 +37,25 @@ public final class AlarmService extends Service {
     }
     static void stop(Context c) {c.stopService(new Intent(c,AlarmService.class));}
     static boolean ringing() {return current!=null;}
+    // The alarm activity reads these on the main thread, where the service updates them.
+    static List<RingingDose> ringingDoses() {
+        AlarmService s=current;
+        return s==null?Collections.emptyList():new ArrayList<>(s.doses.values());
+    }
+    static boolean ringingTest() {
+        AlarmService s=current;
+        return s!=null&&s.testRinging;
+    }
     static void refreshLocale(){AlarmService s=current;if(s!=null)s.handler.post(()->{if(current==s)s.getSystemService(NotificationManager.class).notify(NOTIFICATION_ID,s.notification());});}
     static boolean playing() {AlarmService s=current;return s!=null&&s.player!=null&&s.player.isPlaying();}
     static void dismissDose(long id,String time) {
         AlarmService s=current;
         if(s!=null)s.handler.post(()->{
-            s.slots.removeIf(key->key.startsWith(id+"/")&&key.endsWith("/"+time));
-            if(s.slots.isEmpty())s.stopSelf();
+            s.doses.keySet().removeIf(key->key.startsWith(id+"/")&&key.endsWith("/"+time));
+            s.stopIfIdle();
         });
     }
+    private void stopIfIdle() {if(doses.isEmpty()&&!testRinging)stopSelf();}
     @Override public void onCreate() {super.onCreate();current=this;audio=getSystemService(AudioManager.class);}
     @Override public IBinder onBind(Intent i) {return null;}
     @Override public int onStartCommand(Intent i,int flags,int startId) {
@@ -46,16 +66,18 @@ public final class AlarmService extends Service {
         else startForeground(NOTIFICATION_ID,n);
         long id=i.getLongExtra("med",-1);String day=i.getStringExtra("day"),time=i.getStringExtra("time");
         boolean test=i.getBooleanExtra("test",false);
-        if(!test) {
+        if(test) {
+            testRinging=true;
+        }else{
             // Recheck after asynchronous service startup: a dose can be logged or archived in between.
             try(Store s=new Store(this)) {
                 Store.Med m=s.med(id);
                 if(m==null||!m.reminders||time==null||day==null||!Treatment.includes(m.startDay,m.durationDays,java.time.LocalDate.parse(day))||!Schedule.parseTimes(m.times).contains(time)||s.handled(id,day,time)) {
-                    if(slots.isEmpty())stopSelf();return START_NOT_STICKY;
+                    stopIfIdle();return START_NOT_STICKY;
                 }
+                doses.putIfAbsent(Schedule.key(id,day,time),new RingingDose(m,time));
             }
         }
-        slots.add(test?"test":Schedule.key(id,day,time));
         if(focus==null) {
             focus=new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT).setAudioAttributes(ATTRS).setAcceptsDelayedFocusGain(true)
                 .setOnAudioFocusChangeListener(change->{

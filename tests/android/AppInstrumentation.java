@@ -89,9 +89,11 @@ public final class AppInstrumentation extends Instrumentation {
             });waitForIdleSync();
             check(find("A little breathing room")!=null,"Today opens with the real empty state");
             navigation(c);
+            alarmScreenDoses(c);
             // Test the actual alarm screen and its Stop button separately from the main tracker.
             check(AlarmService.start(c,-1,day,"test",true),"Alarm screen test starts its alarm");check(waitRinging(true),"Alarm is active before opening the alarm screen");
             Activity alarmScreen=startActivitySync(new Intent(c,AlarmActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));waitForIdleSync();
+            check(waitForAlarmLabel(alarmScreen,"Test alarm",true),"The test alarm is labeled as a test");
             runOnMainSync(()->{View stop=match(alarmScreen.getWindow().getDecorView(),"Stop alarm");if(stop==null)throw new AssertionError("Missing alarm screen Stop button");stop.performClick();});
             check(waitRinging(false),"Alarm screen Stop button silences the alarm");waitForIdleSync();
             click("Add medication");waitForIdleSync();
@@ -369,6 +371,34 @@ public final class AppInstrumentation extends Instrumentation {
     }
     private boolean waitRinging(boolean expected) {
         long until=SystemClock.uptimeMillis()+45000;do{if(AlarmService.ringing()==expected)return true;SystemClock.sleep(100);}while(SystemClock.uptimeMillis()<until);return false;
+    }
+    private void alarmScreenDoses(Context c){
+        String day=LocalDate.now().toString(),time="00:00";
+        try(Store s=new Store(c)){
+            Store.Med first=new Store.Med();first.name="First alarm medication";first.dose="1 test tablet";first.notes="";first.times=time;first.reminders=true;s.save(first);
+            Store.Med second=new Store.Med();second.name="Second alarm medication";second.dose="5 mL test dose";second.notes="";second.times=time;second.reminders=true;s.save(second);
+            check(AlarmService.start(c,first.id,day,time,false)&&waitRinging(true),"The first dose starts a ringing alarm");
+            Activity screen=startActivitySync(new Intent(c,AlarmActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+            check(waitForAlarmLabel(screen,first.name,true)&&waitForAlarmLabel(screen,first.dose,true),"The ringing screen shows the first medication and dose");
+            check(waitForAlarmLabel(screen,AppLocale.time(c,time),true),"The ringing screen shows the scheduled time");
+            check(AlarmService.start(c,second.id,day,time,false),"A second dose can ring while the screen is open");
+            check(waitForAlarmLabel(screen,second.name,true)&&waitForAlarmLabel(screen,second.dose,true)&&waitForAlarmLabel(screen,first.name,true),"The open screen shows both ringing medications");
+            check(s.record(first,day,time,"taken"),"The first dose can be logged while both alarms are active");
+            Reminders.dismiss(c,first.id,time);
+            check(waitForAlarmLabel(screen,first.name,false)&&waitForAlarmLabel(screen,second.name,true),"Logging one dose removes only its card from the alarm screen");
+            runOnMainSync(()->match(screen.getWindow().getDecorView(),"Stop alarm").performClick());
+            check(waitRinging(false)&&!s.handled(second.id,day,time),"Stopping the remaining alarm leaves that dose unlogged");
+        }finally{waitForIdleSync();reset(c);}
+    }
+    private boolean waitForAlarmLabel(Activity screen,String label,boolean expected){
+        long until=SystemClock.uptimeMillis()+5000;
+        boolean[] found=new boolean[1];
+        do {
+            runOnMainSync(()->found[0]=match(screen.getWindow().getDecorView(),label)!=null);
+            if(found[0]==expected)return true;
+            SystemClock.sleep(50);
+        }while(SystemClock.uptimeMillis()<until);
+        return false;
     }
     private boolean waitPlaying() {
         long until=SystemClock.uptimeMillis()+20000;do{final boolean[] value=new boolean[1];runOnMainSync(()->value[0]=AlarmService.playing());if(value[0])return true;SystemClock.sleep(100);}while(SystemClock.uptimeMillis()<until);return false;

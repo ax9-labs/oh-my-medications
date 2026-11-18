@@ -111,6 +111,7 @@
     <string name="export_failed">Couldn’t export history. Please choose another location.</string>
     <string name="alarm_title">Medication alarm</string>
     <string name="alarm_due">A scheduled dose is due.</string>
+    <string name="alarm_test_title">Test alarm</string>
     <string name="stop_alarm">Stop alarm</string>
     <string name="stop_open_tracker">Stop &amp; open tracker</string>
     <string name="alarm_stop_hint">Stopping the alarm does not log a dose.\nCheck your schedule before taking medication.</string>

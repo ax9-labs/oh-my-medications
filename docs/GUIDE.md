@@ -32,6 +32,7 @@ No past missing doses are invented.
    Check the phone’s alarm volume and Do Not Disturb settings if it is silent.
    The original **Send a test notification** control remains available for checking notification delivery only.
 6. Use **Stop alarm** on the alarm screen or notification to silence the alarm.
+   The alarm screen shows the medication name, dose, and scheduled time for each ringing reminder.
    This does not log a dose.
    **Stop & open tracker** silences it and opens your schedule.
 7. In **Schedule**, use the **check** icon after taking a dose; it saves the current time as the actual taken time.
