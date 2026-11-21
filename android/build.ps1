@@ -27,7 +27,7 @@ function Add-Dex([string]$Apk, [string]$DexDirectory) {
 }
 
 Add-Type -AssemblyName System.IO.Compression.FileSystem
-New-Item -ItemType Directory -Force build, dist, .local | Out-Null
+New-Item -ItemType Directory -Force build, dist, ../.local | Out-Null
 # These are disposable compiler outputs within this repository's build directory.
 foreach ($name in @('classes', 'dex', 'generated', 'tests', 'instrumentation')) {
     $target = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot "build\$name"))
@@ -56,10 +56,10 @@ Invoke-Checked java @('-cp', "$buildTools\lib\d8.jar", 'com.android.tools.r8.D8'
 Copy-Item build/base.apk build/unaligned.apk -Force
 Add-Dex (Join-Path $PSScriptRoot 'build/unaligned.apk') (Join-Path $PSScriptRoot 'build/dex')
 Invoke-Checked "$buildTools\zipalign.exe" @('-f', '4', 'build/unaligned.apk', 'build/aligned.apk')
-if (!(Test-Path .local/med-tracker.keystore)) {
-    Invoke-Checked keytool @('-genkeypair', '-keystore', '.local/med-tracker.keystore', '-storepass', 'android', '-keypass', 'android', '-alias', 'medtracker', '-keyalg', 'RSA', '-keysize', '3072', '-validity', '10000', '-dname', 'CN=Med Tracker Personal Development')
+if (!(Test-Path ../.local/med-tracker.keystore)) {
+    Invoke-Checked keytool @('-genkeypair', '-keystore', '../.local/med-tracker.keystore', '-storepass', 'android', '-keypass', 'android', '-alias', 'medtracker', '-keyalg', 'RSA', '-keysize', '3072', '-validity', '10000', '-dname', 'CN=Med Tracker Personal Development')
 }
-$signArguments = @('sign', '--ks', '.local/med-tracker.keystore', '--ks-key-alias', 'medtracker', '--ks-pass', 'pass:android', '--key-pass', 'pass:android')
+$signArguments = @('sign', '--ks', '../.local/med-tracker.keystore', '--ks-key-alias', 'medtracker', '--ks-pass', 'pass:android', '--key-pass', 'pass:android')
 Invoke-Checked "$buildTools\apksigner.bat" ($signArguments + @('--out', 'dist/med-tracker.apk', 'build/aligned.apk'))
 Invoke-Checked "$buildTools\apksigner.bat" @('verify', '--verbose', 'dist/med-tracker.apk')
 $hash = (Get-FileHash dist/med-tracker.apk -Algorithm SHA256).Hash.ToLowerInvariant()

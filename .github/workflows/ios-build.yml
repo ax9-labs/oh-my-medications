@@ -1,0 +1,36 @@
+name: iOS build and tests
+
+on:
+  pull_request:
+    paths:
+      - 'ios/**'
+      - '.github/workflows/ios-build.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'ios/**'
+      - '.github/workflows/ios-build.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ios:
+    runs-on: macos-26
+    timeout-minutes: 20
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Test medication rules and reminder planning
+        working-directory: ios
+        run: swift test
+
+      - name: Build the iOS app for Simulator
+        working-directory: ios
+        run: |
+          xcodebuild -project OhMyMedications.xcodeproj -scheme OhMyMedications \
+            -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build

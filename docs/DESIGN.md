@@ -99,6 +99,7 @@ The focused instrumentation audit checks real medication dialogs, Cancel and And
 Run it only on a disposable emulator because it replaces the app's test medication data:
 
 ```powershell
+cd android
 .\build.ps1 -AndroidTests
 adb -s emulator-5556 install -r dist/med-tracker.apk
 adb -s emulator-5556 install -r build/instrumentation/tests.apk

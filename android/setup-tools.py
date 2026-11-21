@@ -5,7 +5,7 @@ import pathlib
 import subprocess
 import zipfile
 
-root = pathlib.Path(__file__).resolve().parent.parent / 'android-tools'
+root = pathlib.Path(__file__).resolve().parents[2] / 'android-tools'
 root.mkdir(exist_ok=True)
 artifacts = [
     ('https://dl.google.com/android/repository/platform-35_r02.zip', 'platform.zip', 'platform', 'sha1', '0bb560a90a7a2cbd0dd8348224d518b638fe7949'),

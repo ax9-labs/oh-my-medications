@@ -4,10 +4,12 @@
 
 # Oh my Medications!
 
-A personal, offline Android medication tracker for daily schedules, ringing reminders, and a clearer record of when you took each dose.
+A personal, offline medication tracker for daily schedules, ringing reminders, and a clearer record of when you took each dose.
 Your medication data stays on your phone, with no account, ads, analytics, or internet permission.
 
-**Android 8.0+ · Version 2.0 · English & Español**
+**Android 8.0+ · iOS 26+ · English & Español**
+
+The native apps live in [`android/`](android) and [`ios/`](ios). See the [iOS build and feature guide](ios/README.md) for Xcode setup and AlarmKit behavior. The screenshots, APK downloads, and setup instructions below are for Android.
 
 **[Website](https://oh-my-medications.com/)** · **[Download the APK](https://github.com/ax9-labs/oh-my-medications/releases)** · [Features](#features) · [Screenshots](#screenshots) · [Get started](#get-started) · [Complete guide](docs/GUIDE.md)
 
@@ -84,10 +86,10 @@ Force-stopping the app disables pending alarms until it is reopened.
 Follow your prescribed instructions.
 The app records your choices; it does not calculate doses or advise whether to take a dose.
 
-## Build and test
+## Build and test Android
 
 The app uses native Android views, Java, and SQLite, with no third-party runtime libraries.
-Build scripts run the core Java tests and English/Spanish translation checks before creating a signed APK.
+The build workflow runs the core Java tests and English/Spanish translation checks before creating a signed APK.
 
 ### Windows
 
@@ -95,6 +97,7 @@ Install Java 21, Python 3 with the `py` launcher, Android SDK Platform 35, and B
 Start an Android emulator, then run:
 
 ```powershell
+cd android
 .\build.ps1
 adb -e install -r dist/med-tracker.apk
 adb -e shell am start -n com.personal.medtracker/.MainActivity
@@ -105,13 +108,14 @@ adb -e shell am start -n com.personal.medtracker/.MainActivity
 Install Java 21 with `keytool`, Python 3, `curl`, and the standard Linux libraries for Android build tools.
 
 ```sh
+cd android
 python3 setup-tools.py
 chmod +x build.sh test.sh
 ./test.sh
 ./build.sh
 ```
 
-Local builds produce `dist/med-tracker.apk`.
+Local builds produce `android/dist/med-tracker.apk`. The development signing key stays at `.local/med-tracker.keystore` in the repository root.
 Keep the signing key stable so future builds can update existing installations.
 Every push to `main` runs the [Android build and release workflow](.github/workflows/android-build.yml), which publishes an APK, checksums, and build metadata as a GitHub prerelease.
 

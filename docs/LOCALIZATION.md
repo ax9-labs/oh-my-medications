@@ -4,10 +4,10 @@ English is the default and fallback. Spanish is available from **Settings → La
 
 ## Resource structure
 
-- `app/src/main/res/values/strings.xml`: complete English catalog, shared messages and plurals.
-- `app/src/main/res/values-es/strings.xml`: complete Spanish catalog.
-- `app/src/main/res/values/languages.xml`: supported BCP 47 tags and their native display names, in matching order.
-- `app/src/main/res/xml/locales_config.xml`: registration for Android's per-app language settings.
+- `android/app/src/main/res/values/strings.xml`: complete English catalog, shared messages and plurals.
+- `android/app/src/main/res/values-es/strings.xml`: complete Spanish catalog.
+- `android/app/src/main/res/values/languages.xml`: supported BCP 47 tags and their native display names, in matching order.
+- `android/app/src/main/res/xml/locales_config.xml`: registration for Android's per-app language settings.
 - `AppLocale.java`: locale selection, resource contexts, background text and date/time formatting.
 - `LocalizedActivity.java`: applies the selected locale before each activity is created.
 - `HistoryExport.java`: CSV report labels/status text use the chosen app language.
@@ -19,7 +19,7 @@ UI code references named Android resources rather than storing visible English s
 1. Copy the English catalog into the appropriate Android resource directory, such as `values-fr/strings.xml` for French. Use standard Android qualifiers for regional translations, such as `values-b+pt+BR`.
 2. Translate every translatable string and plural item. Keep resource keys and numbered formatting arguments (`%1$s`, `%2$d`, etc.) unchanged; reorder the arguments in the sentence when needed. Add the plural quantities required by the target language. XML escapes and Android string escapes must remain valid. Preserve explicit quotes used to retain repeated spaces.
 3. Add its BCP 47 tag and native display name to the paired arrays in `languages.xml`. Keep English first. Add the same tag to `locales_config.xml`.
-4. Run `./test.sh`, `./build.sh` and the Android integration tests. The translation checker verifies complete catalogs, matching format arguments, plural basics and language registration. Android's base resource catalog remains the fallback for untranslated resources.
+4. From `android/` run `./test.sh`, `./build.sh` and the Android integration tests. The translation checker verifies complete catalogs, matching format arguments, plural basics and language registration. Android's base resource catalog remains the fallback for untranslated resources.
 5. Review the translated screens, accessibility descriptions, dates, notification/channel text, alarm screen and CSV export on a device. Long text can wrap; layout and grammatical review are still necessary. Check RTL layouts when adding an RTL language.
 
 The app name and version are marked `translatable="false"`. Native language names remain native names in every locale. Internal exceptions and developer logs are not user-facing UI.

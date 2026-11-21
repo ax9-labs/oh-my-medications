@@ -24,9 +24,10 @@ The emulator uses software CPU/rendering and has no physical audio output. Tests
 ## Commands
 
 ```sh
-./test.sh
-./build.sh
-./build-android-tests.sh
+cd android
+bash test.sh
+bash build.sh
+bash build-android-tests.sh
 adb install -r dist/med-tracker.apk
 adb install -r build/instrumentation/tests.apk
 adb shell pm grant com.personal.medtracker android.permission.POST_NOTIFICATIONS

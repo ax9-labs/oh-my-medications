@@ -8,7 +8,7 @@ Android 8.0 (API 26) or later.
 
 ## Install
 
-Copy `dist/med-tracker.apk` to your Android phone, open it, and allow installation from that browser or file manager if Android asks.
+Copy `android/dist/med-tracker.apk` to your Android phone, open it, and allow installation from that browser or file manager if Android asks.
 The APK is signed for personal testing; it is not a Google Play release.
 
 If you already installed an earlier version, install version 2.0 over it.
@@ -117,7 +117,7 @@ Bottom spacing allows the final list controls to scroll clear of the floating ba
 Soft blue, lavender and peach ambient gradients sit behind translucent white cards.
 Primary icon actions use dark surfaces; light blue remains the app accent in navigation and native controls.
 Medication icon colors remain the user's own visual cues.
-Theme colors are defined in `app/src/main/res/values/colors.xml`; see [design notes](DESIGN.md).
+Theme colors are defined in `android/app/src/main/res/values/colors.xml`; see [design notes](DESIGN.md).
 
 ## Language
 
@@ -211,6 +211,7 @@ Install Java 21, Python 3 with the `py` launcher, and Android SDK Platform 35 wi
 Start an Android emulator, then run these commands in PowerShell:
 
 ```powershell
+cd android
 .\build.ps1
 adb -e install -r dist/med-tracker.apk
 adb -e shell am start -n com.personal.medtracker/.MainActivity
@@ -227,19 +228,20 @@ Requires a Java 21 runtime with `keytool`, Python 3, `curl`, and standard Linux 
 No third-party runtime libraries are bundled in the app.
 
 ```sh
+cd android
 python3 setup-tools.py
 chmod +x build.sh test.sh
 ./test.sh
 ./build.sh
 ```
 
-The pinned Android SDK 35 and Eclipse Java compiler are downloaded into `../android-tools`.
+The pinned Android SDK 35 and Eclipse Java compiler are downloaded into `../android-tools` relative to the repository root.
 The build compiles Java 8 bytecode, converts it with D8, packages resources with AAPT2, aligns the APK, signs it, and verifies its signature.
 `MED_TRACKER_TOOLS` can point to another directory with the same layout.
 The Android SDK is distributed under its own terms: <https://developer.android.com/studio/terms>.
 
 `dist/med-tracker.apk.sha256` records the final APK hash.
-The build creates `.local/med-tracker.keystore` on its first run, using a development password `android`.
+The build creates `.local/med-tracker.keystore` in the repository root on its first run, using a development password `android`.
 Keep that key to install future builds over this one without uninstalling; a different key cannot update an existing installation.
 The source archive excludes the signing key.
 Use a privately managed release key before public distribution.
@@ -251,7 +253,7 @@ Android emulator verification is recorded in [VERIFICATION.md](../VERIFICATION.m
 To run Android integration tests on a **disposable emulator** (the test runner clears the app’s database):
 
 ```sh
-./build-android-tests.sh
+bash build-android-tests.sh
 adb install -r dist/med-tracker.apk
 adb install -r build/instrumentation/tests.apk
 adb shell pm grant com.personal.medtracker android.permission.POST_NOTIFICATIONS

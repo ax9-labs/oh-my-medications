@@ -3,3 +3,6 @@ dist/
 .local/
 local.properties
 .gradle/
+.build/
+DerivedData/
+xcuserdata/

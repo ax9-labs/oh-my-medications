@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$0")"
-TOOLS="${MED_TRACKER_TOOLS:-../android-tools}"
+TOOLS="${MED_TRACKER_TOOLS:-../../android-tools}"
 TOOLS="$(cd "$TOOLS" && pwd)"
 BT="$TOOLS/build-tools/android-15"
 ANDROID_JAR="$TOOLS/platform/android-35/android.jar"
@@ -20,4 +20,4 @@ import zipfile
 with zipfile.ZipFile('build/instrumentation/unaligned.apk','a',zipfile.ZIP_DEFLATED) as z:z.write('build/instrumentation/dex/classes.dex','classes.dex')
 PY
 "$BT/zipalign" -f 4 build/instrumentation/unaligned.apk build/instrumentation/aligned.apk
-"$BT/apksigner" sign --ks .local/med-tracker.keystore --ks-key-alias medtracker --ks-pass pass:android --out build/instrumentation/tests.apk build/instrumentation/aligned.apk
+"$BT/apksigner" sign --ks ../.local/med-tracker.keystore --ks-key-alias medtracker --ks-pass pass:android --out build/instrumentation/tests.apk build/instrumentation/aligned.apk
