@@ -104,7 +104,19 @@ private struct MedicationEditor: View {
                 }
                 Section("Daily times") {
                     ForEach(medication.times) { time in
-                        Text(verbatim: time.label)
+                        HStack {
+                            Text(verbatim: time.label)
+                            Spacer()
+                            Button(role: .destructive) {
+                                medication.times.removeAll { $0.id == time.id }
+                            } label: {
+                                Label("Remove time", systemImage: "minus.circle.fill")
+                                    .labelStyle(.iconOnly)
+                                    .frame(minWidth: 44, minHeight: 44)
+                            }
+                            .buttonStyle(.borderless)
+                            .accessibilityValue(Text(verbatim: time.label))
+                        }
                     }
                     .onDelete { medication.times.remove(atOffsets: $0) }
                     Button("Add time") { addingTime = true }
@@ -131,10 +143,43 @@ private struct MedicationEditor: View {
                             Label(LocalizedStringKey(icon.rawValue), systemImage: icon.rawValue).tag(icon)
                         }
                     }
-                    Picker("Color", selection: $medication.color) {
-                        ForEach(MedicationColor.allCases) { color in
-                            Label(LocalizedStringKey(color.rawValue), systemImage: "circle.fill")
-                                .foregroundStyle(color.tint).tag(color)
+                    NavigationLink {
+                        List {
+                            ForEach(MedicationColor.allCases) { color in
+                                Button {
+                                    medication.color = color
+                                } label: {
+                                    HStack {
+                                        Image(systemName: medication.icon.rawValue)
+                                            .foregroundStyle(color.tint)
+                                            .frame(width: 32)
+                                            .accessibilityHidden(true)
+                                        Text(LocalizedStringKey(color.rawValue))
+                                            .foregroundStyle(.primary)
+                                        Spacer()
+                                        if medication.color == color {
+                                            Image(systemName: "checkmark")
+                                                .foregroundStyle(.tint)
+                                                .accessibilityHidden(true)
+                                        }
+                                    }
+                                    .frame(minHeight: 44)
+                                    .contentShape(.rect)
+                                }
+                                .buttonStyle(.plain)
+                                .accessibilityAddTraits(medication.color == color ? .isSelected : [])
+                            }
+                        }
+                        .navigationTitle("Color")
+                    } label: {
+                        HStack {
+                            Text("Color")
+                            Spacer()
+                            Image(systemName: medication.icon.rawValue)
+                                .foregroundStyle(medication.color.tint)
+                                .accessibilityHidden(true)
+                            Text(LocalizedStringKey(medication.color.rawValue))
+                                .foregroundStyle(.secondary)
                         }
                     }
                 }

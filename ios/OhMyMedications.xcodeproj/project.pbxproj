@@ -1,176 +1,58 @@
 // !$*UTF8*$!
 {
 	archiveVersion = 1;
-	classes = {};
+	classes = {
+	};
 	objectVersion = 56;
 	objects = {
-		01CC13F62A52A7AEA885CEDF /* MedicationApp.swift */ = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.swift;
-			path = MedicationApp.swift;
-			sourceTree = "<group>";
-		};
-		65A9E3C0CEC71796906D11F3 /* MedicationApp.swift in Sources */ = {
-			isa = PBXBuildFile;
-			fileRef = 01CC13F62A52A7AEA885CEDF /* MedicationApp.swift */;
-		};
-		7D80ADB0CC59B007A63D385C /* MedicationData.swift */ = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.swift;
-			path = MedicationData.swift;
-			sourceTree = "<group>";
-		};
-		7CA0B1CC6C714A7567AEA4F9 /* MedicationData.swift in Sources */ = {
-			isa = PBXBuildFile;
-			fileRef = 7D80ADB0CC59B007A63D385C /* MedicationData.swift */;
-		};
-		046AF2BAFD32886C557AA1DC /* MedicationStore.swift */ = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.swift;
-			path = MedicationStore.swift;
-			sourceTree = "<group>";
-		};
-		C577D44EDA5A9AED2FFFA6DB /* MedicationStore.swift in Sources */ = {
-			isa = PBXBuildFile;
-			fileRef = 046AF2BAFD32886C557AA1DC /* MedicationStore.swift */;
-		};
-		96CDE5FCCD5D7148099961E5 /* MedicationsView.swift */ = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.swift;
-			path = MedicationsView.swift;
-			sourceTree = "<group>";
-		};
-		405A2B0F83C704481926A1A9 /* MedicationsView.swift in Sources */ = {
-			isa = PBXBuildFile;
-			fileRef = 96CDE5FCCD5D7148099961E5 /* MedicationsView.swift */;
-		};
-		741C0C9E3AE728196CE1C63D /* ReminderPlan.swift */ = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.swift;
-			path = ReminderPlan.swift;
-			sourceTree = "<group>";
-		};
-		039D717A00A0DC27D5E1D262 /* ReminderPlan.swift in Sources */ = {
-			isa = PBXBuildFile;
-			fileRef = 741C0C9E3AE728196CE1C63D /* ReminderPlan.swift */;
-		};
-		9204391A9244C0A9E91B4117 /* Reminders.swift */ = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.swift;
-			path = Reminders.swift;
-			sourceTree = "<group>";
-		};
-		998A8172D107E98EA58B2400 /* Reminders.swift in Sources */ = {
-			isa = PBXBuildFile;
-			fileRef = 9204391A9244C0A9E91B4117 /* Reminders.swift */;
-		};
-		9C727AD40886B97E0F5A5400 /* ReportsView.swift */ = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.swift;
-			path = ReportsView.swift;
-			sourceTree = "<group>";
-		};
-		3334EFDACA2CE12CA4D04CBC /* ReportsView.swift in Sources */ = {
-			isa = PBXBuildFile;
-			fileRef = 9C727AD40886B97E0F5A5400 /* ReportsView.swift */;
-		};
-		7CB7EC7627E2E5D860E47CAB /* ScheduleView.swift */ = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.swift;
-			path = ScheduleView.swift;
-			sourceTree = "<group>";
-		};
-		C27C94D9E73DDC4E55682F85 /* ScheduleView.swift in Sources */ = {
-			isa = PBXBuildFile;
-			fileRef = 7CB7EC7627E2E5D860E47CAB /* ScheduleView.swift */;
-		};
-		BF1AD3DB631E56689833C63B /* en Localizable.strings */ = {
-			isa = PBXFileReference;
-			lastKnownFileType = text.plist.strings;
-			name = en;
-			path = en.lproj/Localizable.strings;
-			sourceTree = "<group>";
-		};
-		F4DAE31AC8C8F939EF3BFC8A /* es Localizable.strings */ = {
-			isa = PBXFileReference;
-			lastKnownFileType = text.plist.strings;
-			name = es;
-			path = es.lproj/Localizable.strings;
-			sourceTree = "<group>";
-		};
-		9E67E6FC41E4FD3453A359BC /* Localizable.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				BF1AD3DB631E56689833C63B /* en Localizable.strings */,
-				F4DAE31AC8C8F939EF3BFC8A /* es Localizable.strings */,
+
+/* Begin PBXBuildFile section */
+		039D717A00A0DC27D5E1D262 /* ReminderPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741C0C9E3AE728196CE1C63D /* ReminderPlan.swift */; };
+		07CF70BFE685817771C4CB29 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 26B2A637F7DC4079D5AB78A5 /* PrivacyInfo.xcprivacy */; };
+		24A5C23C605B89D0D569101F /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9E67E6FC41E4FD3453A359BC /* Localizable.strings */; };
+		3334EFDACA2CE12CA4D04CBC /* ReportsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C727AD40886B97E0F5A5400 /* ReportsView.swift */; };
+		405A2B0F83C704481926A1A9 /* MedicationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CDE5FCCD5D7148099961E5 /* MedicationsView.swift */; };
+		543C6F7818B3150B9C4B8A11 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6272F142E862102DF992CE6A /* InfoPlist.strings */; };
+		65A9E3C0CEC71796906D11F3 /* MedicationApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01CC13F62A52A7AEA885CEDF /* MedicationApp.swift */; };
+		7CA0B1CC6C714A7567AEA4F9 /* MedicationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D80ADB0CC59B007A63D385C /* MedicationData.swift */; };
+		998A8172D107E98EA58B2400 /* Reminders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9204391A9244C0A9E91B4117 /* Reminders.swift */; };
+		B1202C7A8238826DC782F5A0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 28AAD1477D5182D66D4B03B3 /* Assets.xcassets */; };
+		C27C94D9E73DDC4E55682F85 /* ScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CB7EC7627E2E5D860E47CAB /* ScheduleView.swift */; };
+		C577D44EDA5A9AED2FFFA6DB /* MedicationStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046AF2BAFD32886C557AA1DC /* MedicationStore.swift */; };
+		F89C7EAF30B1603400996C81 /* AlarmView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F89C7EAE30B1603400996C81 /* AlarmView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		01CC13F62A52A7AEA885CEDF /* MedicationApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationApp.swift; sourceTree = "<group>"; };
+		046AF2BAFD32886C557AA1DC /* MedicationStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationStore.swift; sourceTree = "<group>"; };
+		26B2A637F7DC4079D5AB78A5 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		28AAD1477D5182D66D4B03B3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		741C0C9E3AE728196CE1C63D /* ReminderPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderPlan.swift; sourceTree = "<group>"; };
+		7B594B6DB375E1BF3F23CDD6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7CB7EC7627E2E5D860E47CAB /* ScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleView.swift; sourceTree = "<group>"; };
+		7D80ADB0CC59B007A63D385C /* MedicationData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationData.swift; sourceTree = "<group>"; };
+		9204391A9244C0A9E91B4117 /* Reminders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reminders.swift; sourceTree = "<group>"; };
+		96CDE5FCCD5D7148099961E5 /* MedicationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicationsView.swift; sourceTree = "<group>"; };
+		9C727AD40886B97E0F5A5400 /* ReportsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportsView.swift; sourceTree = "<group>"; };
+		BDE4C0CCBC3BABAE77E81077 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		BF1AD3DB631E56689833C63B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		CDD7654DCA931623F720E61B /* OhMyMedications.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OhMyMedications.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F4DAE31AC8C8F939EF3BFC8A /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
+		F89C7EAE30B1603400996C81 /* AlarmView.swift */ = {isa = PBXFileReference; path = AlarmView.swift; sourceTree = "<group>"; };
+		FE23F14694E08A6FC0F46270 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		FF4926435F382500329CC243 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
-			name = Localizable.strings;
-			sourceTree = "<group>";
+			runOnlyForDeploymentPostprocessing = 0;
 		};
-		24A5C23C605B89D0D569101F /* Localizable.strings in Resources */ = {
-			isa = PBXBuildFile;
-			fileRef = 9E67E6FC41E4FD3453A359BC /* Localizable.strings */;
-		};
-		FE23F14694E08A6FC0F46270 /* en InfoPlist.strings */ = {
-			isa = PBXFileReference;
-			lastKnownFileType = text.plist.strings;
-			name = en;
-			path = en.lproj/InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		BDE4C0CCBC3BABAE77E81077 /* es InfoPlist.strings */ = {
-			isa = PBXFileReference;
-			lastKnownFileType = text.plist.strings;
-			name = es;
-			path = es.lproj/InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		6272F142E862102DF992CE6A /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				FE23F14694E08A6FC0F46270 /* en InfoPlist.strings */,
-				BDE4C0CCBC3BABAE77E81077 /* es InfoPlist.strings */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		543C6F7818B3150B9C4B8A11 /* InfoPlist.strings in Resources */ = {
-			isa = PBXBuildFile;
-			fileRef = 6272F142E862102DF992CE6A /* InfoPlist.strings */;
-		};
-		7B594B6DB375E1BF3F23CDD6 /* Info.plist */ = {
-			isa = PBXFileReference;
-			lastKnownFileType = text.plist.xml;
-			path = Info.plist;
-			sourceTree = "<group>";
-		};
-		28AAD1477D5182D66D4B03B3 /* Assets.xcassets */ = {
-			isa = PBXFileReference;
-			lastKnownFileType = folder.assetcatalog;
-			path = Assets.xcassets;
-			sourceTree = "<group>";
-		};
-		B1202C7A8238826DC782F5A0 /* Assets.xcassets in Resources */ = {
-			isa = PBXBuildFile;
-			fileRef = 28AAD1477D5182D66D4B03B3 /* Assets.xcassets */;
-		};
-		26B2A637F7DC4079D5AB78A5 /* PrivacyInfo.xcprivacy */ = {
-			isa = PBXFileReference;
-			lastKnownFileType = text.xml;
-			path = PrivacyInfo.xcprivacy;
-			sourceTree = "<group>";
-		};
-		07CF70BFE685817771C4CB29 /* PrivacyInfo.xcprivacy in Resources */ = {
-			isa = PBXBuildFile;
-			fileRef = 26B2A637F7DC4079D5AB78A5 /* PrivacyInfo.xcprivacy */;
-		};
-		CDD7654DCA931623F720E61B /* OhMyMedications.app */ = {
-			isa = PBXFileReference;
-			explicitFileType = wrapper.application;
-			includeInIndex = 0;
-			path = OhMyMedications.app;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
 		2EB56BE3C2D93CDAB0C52E67 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
@@ -182,9 +64,10 @@
 				9204391A9244C0A9E91B4117 /* Reminders.swift */,
 				9C727AD40886B97E0F5A5400 /* ReportsView.swift */,
 				7CB7EC7627E2E5D860E47CAB /* ScheduleView.swift */,
+				F89C7EAE30B1603400996C81 /* AlarmView.swift */,
 			);
-			sourceTree = "<group>";
 			path = Sources;
+			sourceTree = "<group>";
 		};
 		87DF60DE337FB58864343E39 /* Resources */ = {
 			isa = PBXGroup;
@@ -195,18 +78,10 @@
 				9E67E6FC41E4FD3453A359BC /* Localizable.strings */,
 				26B2A637F7DC4079D5AB78A5 /* PrivacyInfo.xcprivacy */,
 			);
-			sourceTree = "<group>";
 			path = Resources;
-		};
-		FE0A091FDBFB3E9C31B7A1BD /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				CDD7654DCA931623F720E61B /* OhMyMedications.app */,
-			);
 			sourceTree = "<group>";
-			name = Products;
 		};
-		C649629229F6187C3D12CE69 /* Main Group */ = {
+		C649629229F6187C3D12CE69 = {
 			isa = PBXGroup;
 			children = (
 				2EB56BE3C2D93CDAB0C52E67 /* Sources */,
@@ -215,29 +90,64 @@
 			);
 			sourceTree = "<group>";
 		};
-		557AB3F1DA50B6D8CA2F51D5 /* Sources Phase */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				65A9E3C0CEC71796906D11F3 /* MedicationApp.swift in Sources */,
-				7CA0B1CC6C714A7567AEA4F9 /* MedicationData.swift in Sources */,
-				C577D44EDA5A9AED2FFFA6DB /* MedicationStore.swift in Sources */,
-				405A2B0F83C704481926A1A9 /* MedicationsView.swift in Sources */,
-				039D717A00A0DC27D5E1D262 /* ReminderPlan.swift in Sources */,
-				998A8172D107E98EA58B2400 /* Reminders.swift in Sources */,
-				3334EFDACA2CE12CA4D04CBC /* ReportsView.swift in Sources */,
-				C27C94D9E73DDC4E55682F85 /* ScheduleView.swift in Sources */,
+		FE0A091FDBFB3E9C31B7A1BD /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CDD7654DCA931623F720E61B /* OhMyMedications.app */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
+			name = Products;
+			sourceTree = "<group>";
 		};
-		FF4926435F382500329CC243 /* Frameworks Phase */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		BBED7B06327A8CBA76667CB1 /* OhMyMedications */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 27C1943FD693859E5389CCC0 /* Build configuration list for PBXNativeTarget "OhMyMedications" */;
+			buildPhases = (
+				557AB3F1DA50B6D8CA2F51D5 /* Sources */,
+				FF4926435F382500329CC243 /* Frameworks */,
+				DA198EAFB3D284718B362C1F /* Resources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = OhMyMedications;
+			productName = OhMyMedications;
+			productReference = CDD7654DCA931623F720E61B /* OhMyMedications.app */;
+			productType = "com.apple.product-type.application";
 		};
-		DA198EAFB3D284718B362C1F /* Resources Phase */ = {
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F6F4DA8D93E88A08220E03B7 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 2720;
+			};
+			buildConfigurationList = 52382992B572ED175561B3B2 /* Build configuration list for PBXProject "OhMyMedications" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				es,
+				Base,
+			);
+			mainGroup = C649629229F6187C3D12CE69;
+			productRefGroup = FE0A091FDBFB3E9C31B7A1BD /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				BBED7B06327A8CBA76667CB1 /* OhMyMedications */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		DA198EAFB3D284718B362C1F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -248,113 +158,191 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		40609A412964FFB79DAE9C3A /* Project Debug */ = {
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		557AB3F1DA50B6D8CA2F51D5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				65A9E3C0CEC71796906D11F3 /* MedicationApp.swift in Sources */,
+				7CA0B1CC6C714A7567AEA4F9 /* MedicationData.swift in Sources */,
+				C577D44EDA5A9AED2FFFA6DB /* MedicationStore.swift in Sources */,
+				405A2B0F83C704481926A1A9 /* MedicationsView.swift in Sources */,
+				039D717A00A0DC27D5E1D262 /* ReminderPlan.swift in Sources */,
+				998A8172D107E98EA58B2400 /* Reminders.swift in Sources */,
+				3334EFDACA2CE12CA4D04CBC /* ReportsView.swift in Sources */,
+				F89C7EAF30B1603400996C81 /* AlarmView.swift in Sources */,
+				C27C94D9E73DDC4E55682F85 /* ScheduleView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		6272F142E862102DF992CE6A /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FE23F14694E08A6FC0F46270 /* en */,
+				BDE4C0CCBC3BABAE77E81077 /* es */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		9E67E6FC41E4FD3453A359BC /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BF1AD3DB631E56689833C63B /* en */,
+				F4DAE31AC8C8F939EF3BFC8A /* es */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		24B7DFA423B1C8A2130AE03E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				SDKROOT = iphoneos;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				DEVELOPMENT_TEAM = Z4P78992M8;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_VERSION = 5.0;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Release;
+		};
+		40609A412964FFB79DAE9C3A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				DEVELOPMENT_TEAM = Z4P78992M8;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-			};
-			name = Debug;
-		};
-		24B7DFA423B1C8A2130AE03E /* Project Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				SDKROOT = iphoneos;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
-				CLANG_ENABLE_MODULES = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
-			name = Release;
+			name = Debug;
 		};
-		52382992B572ED175561B3B2 /* Project Configurations */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				40609A412964FFB79DAE9C3A /* Project Debug */,
-				24B7DFA423B1C8A2130AE03E /* Project Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		5FE44C1D4108931802BC082F /* App Debug */ = {
+		5FE44C1D4108931802BC082F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PRODUCT_BUNDLE_IDENTIFIER = com.ax9labs.ohmymedications;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Oh my Medications!";
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				MARKETING_VERSION = 2.0;
-				CURRENT_PROJECT_VERSION = 1;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				PRODUCT_BUNDLE_IDENTIFIER = com.ax9labs.ohmymedications;
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
-		A8C4CABD5DA2B1F3DAB7CD6F /* App Release */ = {
+		A8C4CABD5DA2B1F3DAB7CD6F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PRODUCT_BUNDLE_IDENTIFIER = com.ax9labs.ohmymedications;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Oh my Medications!";
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				MARKETING_VERSION = 2.0;
-				CURRENT_PROJECT_VERSION = 1;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				PRODUCT_BUNDLE_IDENTIFIER = com.ax9labs.ohmymedications;
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
-		27C1943FD693859E5389CCC0 /* App Configurations */ = {
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		27C1943FD693859E5389CCC0 /* Build configuration list for PBXNativeTarget "OhMyMedications" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				5FE44C1D4108931802BC082F /* App Debug */,
-				A8C4CABD5DA2B1F3DAB7CD6F /* App Release */,
+				5FE44C1D4108931802BC082F /* Debug */,
+				A8C4CABD5DA2B1F3DAB7CD6F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		BBED7B06327A8CBA76667CB1 /* OhMyMedications */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 27C1943FD693859E5389CCC0 /* App Configurations */;
-			buildPhases = (
-				557AB3F1DA50B6D8CA2F51D5 /* Sources Phase */,
-				FF4926435F382500329CC243 /* Frameworks Phase */,
-				DA198EAFB3D284718B362C1F /* Resources Phase */,
+		52382992B572ED175561B3B2 /* Build configuration list for PBXProject "OhMyMedications" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				40609A412964FFB79DAE9C3A /* Debug */,
+				24B7DFA423B1C8A2130AE03E /* Release */,
 			);
-			buildRules = ();
-			dependencies = ();
-			name = OhMyMedications;
-			productName = OhMyMedications;
-			productReference = CDD7654DCA931623F720E61B /* OhMyMedications.app */;
-			productType = "com.apple.product-type.application";
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
-		F6F4DA8D93E88A08220E03B7 /* Project */ = {
-			isa = PBXProject;
-			attributes = { LastUpgradeCheck = 2600; };
-			buildConfigurationList = 52382992B572ED175561B3B2 /* Project Configurations */;
-			compatibilityVersion = "Xcode 14.0";
-			developmentRegion = en;
-			hasScannedForEncodings = 0;
-			knownRegions = (en, es, Base);
-			mainGroup = C649629229F6187C3D12CE69 /* Main Group */;
-			productRefGroup = FE0A091FDBFB3E9C31B7A1BD /* Products */;
-			projectDirPath = "";
-			projectRoot = "";
-			targets = (
-				BBED7B06327A8CBA76667CB1 /* OhMyMedications */,
-			);
-		};
+/* End XCConfigurationList section */
 	};
-	rootObject = F6F4DA8D93E88A08220E03B7 /* Project */;
+	rootObject = F6F4DA8D93E88A08220E03B7 /* Project object */;
 }

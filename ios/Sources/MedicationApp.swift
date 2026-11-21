@@ -9,7 +9,7 @@ enum AppLanguage {
 struct MedicationApp: App {
     @Environment(\.scenePhase) private var scenePhase
     @StateObject private var store = MedicationStore()
-    @StateObject private var reminders = Reminders()
+    @StateObject private var reminders = Reminders.shared
     @AppStorage("language") private var language = AppLanguage.defaultCode
 
     var body: some Scene {
@@ -28,13 +28,23 @@ struct MedicationApp: App {
             .environment(\.locale, Locale(identifier: language))
             .environmentObject(store)
             .environmentObject(reminders)
-            .task { refreshReminders() }
+            .background {
+                AlarmPresenter(reminders: reminders, language: language, isActive: scenePhase == .active)
+            }
+            .task {
+                refreshReminders()
+                await reminders.observeAlarms()
+            }
             .onChange(of: scenePhase) { _, phase in
                 if phase == .active {
+                    reminders.checkAuthorization()
+                    reminders.updateActiveAlarms()
                     store.load()
                     refreshReminders()
                 }
             }
+            .task { await reminders.observeAuthorization() }
+            .onChange(of: reminders.authorized) { _, _ in refreshReminders() }
             .onChange(of: language) { _, _ in refreshReminders() }
             .onReceive(store.$data) { data in
                 if store.loaded { reminders.refresh(data, language: language) }
@@ -59,12 +69,24 @@ struct MedicationApp: App {
 }
 
 struct SettingsButton: View {
+    @EnvironmentObject private var reminders: Reminders
     @State private var showing = false
 
     var body: some View {
         Button { showing = true } label: {
-            Label("Settings", systemImage: "gearshape")
+            Label {
+                Text("Settings")
+            } icon: {
+                HStack(spacing: 4) {
+                    Image(systemName: "gearshape")
+                    if reminders.needsAttention {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .foregroundStyle(.orange)
+                    }
+                }
+            }
         }
+        .accessibilityValue(reminders.needsAttention ? Text("Alarm settings need attention") : Text(""))
         .sheet(isPresented: $showing) { SettingsView() }
     }
 }
@@ -85,8 +107,26 @@ struct SettingsView: View {
                 }
                 Section {
                     if reminders.authorized {
+                        Label("Alarm access allowed", systemImage: "checkmark.circle.fill")
+                            .foregroundStyle(.green)
+                        Text("Alarms sound even in Silent mode and Focus.")
+                            .foregroundStyle(.secondary)
+                    } else {
+                        Label("Alarm settings need attention", systemImage: "exclamationmark.triangle.fill")
+                            .foregroundStyle(.orange)
+                        Text(reminders.permissionDenied
+                             ? LocalizedStringKey("Enable alarm access in iOS Settings to receive alarms, including in Silent mode and Focus.")
+                             : LocalizedStringKey("Allow alarm access to receive alarms, including in Silent mode and Focus."))
+                            .foregroundStyle(.secondary)
+                    }
+                    if reminders.authorized {
                         Button("Start a test alarm") {
                             Task { await reminders.test(language: language) }
+                        }
+                        .disabled(reminders.testing)
+                        if let status = reminders.testStatus {
+                            Text(LocalizedStringKey(status))
+                                .foregroundStyle(.secondary)
                         }
                         if let date = reminders.firstUnscheduled {
                             LabeledContent("First alarm outside the queue") {
@@ -95,7 +135,7 @@ struct SettingsView: View {
                             Text("Open the app regularly to schedule more doses.")
                                 .foregroundStyle(.secondary)
                         }
-                    } else {
+                    } else if !reminders.permissionDenied {
                         Button("Allow alarms") {
                             Task {
                                 await reminders.authorize()

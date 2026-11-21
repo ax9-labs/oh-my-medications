@@ -46,8 +46,35 @@ struct ScheduleView: View {
                         if slots.isEmpty {
                             Text("No doses scheduled.").foregroundStyle(.secondary)
                         }
-                        ForEach(slots) { slot in
-                            doseRow(slot, now: context.date)
+                        if ScheduleCalendar.local.isDate(day, inSameDayAs: context.date) {
+                            ForEach(slots.filter { $0.scheduled <= context.date }) { slot in
+                                doseRow(slot, now: context.date)
+                            }
+                            HStack(spacing: 12) {
+                                Image(systemName: "clock.fill")
+                                    .accessibilityHidden(true)
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text("Now")
+                                        .font(.headline)
+                                    Text(timeOfDay(at: context.date))
+                                        .font(.subheadline)
+                                }
+                                Spacer()
+                                Text(context.date, format: .dateTime.hour().minute())
+                                    .font(.headline)
+                                    .monospacedDigit()
+                            }
+                            .foregroundStyle(.teal)
+                            .padding(.vertical, 8)
+                            .listRowBackground(Color.teal.opacity(0.12))
+                            .accessibilityElement(children: .combine)
+                            ForEach(slots.filter { $0.scheduled > context.date }) { slot in
+                                doseRow(slot, now: context.date)
+                            }
+                        } else {
+                            ForEach(slots) { slot in
+                                doseRow(slot, now: context.date)
+                            }
                         }
                     }
                 }
@@ -65,8 +92,18 @@ struct ScheduleView: View {
         }
     }
 
+    private func timeOfDay(at date: Date) -> LocalizedStringKey {
+        switch ScheduleCalendar.local.component(.hour, from: date) {
+        case 5..<12: "Morning"
+        case 12..<17: "Afternoon"
+        case 17..<21: "Evening"
+        default: "Night"
+        }
+    }
+
     private func doseRow(_ slot: DoseSlot, now: Date) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
+        let taken = store.data.events[slot.id]?.status == .taken
+        return VStack(alignment: .leading, spacing: 8) {
             LabeledContent {
                 Text(verbatim: slot.time.label).monospacedDigit()
             } label: {
@@ -77,20 +114,29 @@ struct ScheduleView: View {
             }
             if let event = store.data.events[slot.id] {
                 HStack {
-                    Text(LocalizedStringKey(event.status == .taken ? "Taken" : "Skipped"))
+                    Label(LocalizedStringKey(event.status == .taken ? "Taken" : "Skipped"),
+                          systemImage: event.status == .taken ? "checkmark.circle.fill" : "forward.end.circle")
+                        .foregroundStyle(event.status == .taken ? Color.green : Color.secondary)
                     Spacer()
-                    Button("Undo") { store.undo(event) }
+                    Button { store.undo(event) } label: {
+                        Label("Undo", systemImage: "arrow.uturn.backward.circle")
+                            .labelStyle(.iconOnly)
+                            .font(.title2)
+                            .frame(minWidth: 44, minHeight: 44)
+                    }
                 }
                 .buttonStyle(.borderless)
             } else {
-                ViewThatFits(in: .horizontal) {
-                    HStack { doseActions(slot, now: now) }
-                    VStack(alignment: .leading) { doseActions(slot, now: now) }
+                HStack(spacing: 20) {
+                    doseActions(slot, now: now)
                 }
+                .labelStyle(.iconOnly)
+                .font(.title2)
                 .buttonStyle(.borderless)
             }
         }
         .padding(.vertical, 4)
+        .listRowBackground(taken ? Color.green.opacity(0.12) : Color(uiColor: .secondarySystemGroupedBackground))
     }
 
     @ViewBuilder
@@ -98,19 +144,22 @@ struct ScheduleView: View {
         Button {
             _ = store.log(slot, status: .taken)
         } label: {
-            Label("Log as taken", systemImage: "checkmark.circle")
+            Label("Log as taken", systemImage: "checkmark.circle.fill")
+                .frame(minWidth: 44, minHeight: 44)
         }
         .disabled(!slot.canTake(at: now))
         Button {
             editing = slot
         } label: {
-            Label("Taken at…", systemImage: "clock")
+            Label("Taken at…", systemImage: "clock.badge.checkmark")
+                .frame(minWidth: 44, minHeight: 44)
         }
         .disabled(!slot.canTake(at: now))
         Button {
             _ = store.log(slot, status: .skipped)
         } label: {
-            Label("Skip", systemImage: "xmark.circle")
+            Label("Skip", systemImage: "forward.end.circle")
+                .frame(minWidth: 44, minHeight: 44)
         }
         .disabled(!slot.canSkip(at: now))
     }
