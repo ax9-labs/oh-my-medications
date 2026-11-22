@@ -9,7 +9,7 @@ enum AppLanguage {
 struct MedicationApp: App {
     @Environment(\.scenePhase) private var scenePhase
     @StateObject private var store = MedicationStore()
-    @StateObject private var reminders = Reminders.shared
+    @StateObject private var reminders = Reminders()
     @AppStorage("language") private var language = AppLanguage.defaultCode
 
     var body: some Scene {
@@ -28,17 +28,10 @@ struct MedicationApp: App {
             .environment(\.locale, Locale(identifier: language))
             .environmentObject(store)
             .environmentObject(reminders)
-            .background {
-                AlarmPresenter(reminders: reminders, language: language, isActive: scenePhase == .active)
-            }
-            .task {
-                refreshReminders()
-                await reminders.observeAlarms()
-            }
+            .task { refreshReminders() }
             .onChange(of: scenePhase) { _, phase in
                 if phase == .active {
                     reminders.checkAuthorization()
-                    reminders.updateActiveAlarms()
                     store.load()
                     refreshReminders()
                 }

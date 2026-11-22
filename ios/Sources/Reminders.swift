@@ -27,70 +27,7 @@ final class Reminders: ObservableObject {
     }
     @Published private(set) var schedulingFailed = false
     @Published private(set) var firstUnscheduled: Date?
-    static let shared = Reminders()
-    @Published private(set) var activeAlarm: ActiveAlarm?
-    @Published private(set) var stoppingFailed = false
-    private var openedAlarmID: UUID?
     private let manager = AlarmManager.shared
-
-    struct ActiveAlarm: Identifiable {
-        let id: UUID
-        let title: String
-        let medications: [Medication]
-        let isTest: Bool
-    }
-
-    func observeAlarms() async {
-        updateActiveAlarms()
-        for await alarms in manager.alarmUpdates {
-            guard !Task.isCancelled else { return }
-            updateActiveAlarms(alarms)
-        }
-    }
-
-    func updateActiveAlarms(_ incoming: [Alarm]? = nil) {
-        guard let alarms = incoming ?? (try? manager.alarms) else { return }
-        let ringing = alarms.filter { $0.state == .alerting }
-        let id = openedAlarmID
-            ?? ringing.first(where: { $0.id == activeAlarm?.id })?.id
-            ?? ringing.first?.id
-        activeAlarm = id.map { id in
-            let ids = Set(ringing.map(\.id) + [id])
-            let medications = ids.compactMap { alarmID -> Medication? in
-                guard let data = UserDefaults.standard.data(forKey: "alarmMedication.\(alarmID.uuidString)") else {
-                    return nil
-                }
-                return try? JSONDecoder().decode(Medication.self, from: data)
-            }
-            let unique = Dictionary(medications.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
-            return ActiveAlarm(
-                id: id,
-                title: UserDefaults.standard.string(forKey: "alarmTitle.\(id.uuidString)") ?? "",
-                medications: unique.values.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending },
-                isTest: id == testID)
-        }
-    }
-
-    func openAlarm(id: UUID) {
-        openedAlarmID = id
-        stoppingFailed = false
-        updateActiveAlarms()
-    }
-
-    func stopActiveAlarm() {
-        guard let alarm = activeAlarm else { return }
-        do {
-            // A custom Open action may already have stopped the system alert.
-            if try manager.alarms.contains(where: { $0.id == alarm.id && $0.state == .alerting }) {
-                try manager.stop(id: alarm.id)
-            }
-            openedAlarmID = nil
-            stoppingFailed = false
-            updateActiveAlarms()
-        } catch {
-            stoppingFailed = true
-        }
-    }
     private let testID = UUID(uuidString: "5D7D9C99-4101-4580-8E82-BDDE4EA03B93")!
     private var queued: (MedicationData, String)?
     private var updating = false
@@ -161,9 +98,6 @@ final class Reminders: ObservableObject {
             let existingIDs = Set(existing.map(\.id))
             for entry in plan.entries {
                 let id = identifier(entry, language: language)
-                // Keep the prescribed details available after a cold launch from an alarm.
-                let details = try JSONEncoder().encode(entry.medication)
-                UserDefaults.standard.set(details, forKey: "alarmMedication.\(id.uuidString)")
                 guard !existingIDs.contains(id), entry.next > .now else { continue }
                 let schedule: Alarm.Schedule = entry.repeats
                     ? .relative(.init(time: .init(hour: entry.time.hour, minute: entry.time.minute),
@@ -180,6 +114,7 @@ final class Reminders: ObservableObject {
 
     private func identifier(_ entry: ReminderPlan.Entry, language: String) -> UUID {
         let med = entry.medication
+        // Keep the same IDs for alarms already scheduled by older app versions.
         let key = ["alarm-screen-v1", med.id.uuidString, entry.time.label, med.name, med.dose, language,
                    entry.repeats ? "daily" : String(entry.next.timeIntervalSince1970)]
         let input = key.map { "\($0.utf8.count):\($0)" }.joined()
@@ -200,7 +135,21 @@ final class Reminders: ObservableObject {
                                         metadata: DoseAlarmMetadata(), tintColor: .teal)
         let configuration = AlarmManager.AlarmConfiguration.alarm(
             schedule: schedule, attributes: attributes, secondaryIntent: OpenAlarmIntent(alarmID: id.uuidString))
-        UserDefaults.standard.set(title, forKey: "alarmTitle.\(id.uuidString)")
         _ = try await manager.schedule(id: id, configuration: configuration)
+    }
+}
+
+struct OpenAlarmIntent: LiveActivityIntent {
+    static let title: LocalizedStringResource = "Open app"
+    static var supportedModes: IntentModes { .foreground }
+
+    // Existing scheduled alarms carry this parameter.
+    @Parameter(title: "Alarm identifier") var alarmID: String
+
+    init() {}
+    init(alarmID: String) { self.alarmID = alarmID }
+
+    func perform() async throws -> some IntentResult {
+        .result()
     }
 }

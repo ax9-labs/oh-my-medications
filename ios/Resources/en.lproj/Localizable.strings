@@ -6,16 +6,12 @@
 "Allow alarm access before testing." = "Allow alarm access before testing.";
 "Test alarm scheduled. It should ring in about a second." = "Test alarm scheduled. It should ring in about a second.";
 "The test alarm could not be scheduled. Check alarm access and try again." = "The test alarm could not be scheduled. Check alarm access and try again.";
-"Scheduled medications" = "Scheduled medications";
-"This is a test alarm. Check Schedule for your medications." = "This is a test alarm. Check Schedule for your medications.";
 "Now" = "Now";
 "Morning" = "Morning";
 "Afternoon" = "Afternoon";
 "Evening" = "Evening";
 "Night" = "Night";
 "Open app" = "Open app";
-"Medication reminder" = "Medication reminder";
-"The alarm could not be stopped. Try again." = "The alarm could not be stopped. Try again.";
 "Remove time" = "Remove time";
 "Schedule" = "Schedule";
 "Medications" = "Medications";

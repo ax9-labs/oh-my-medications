@@ -19,7 +19,6 @@
 		B1202C7A8238826DC782F5A0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 28AAD1477D5182D66D4B03B3 /* Assets.xcassets */; };
 		C27C94D9E73DDC4E55682F85 /* ScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CB7EC7627E2E5D860E47CAB /* ScheduleView.swift */; };
 		C577D44EDA5A9AED2FFFA6DB /* MedicationStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046AF2BAFD32886C557AA1DC /* MedicationStore.swift */; };
-		F89C7EAF30B1603400996C81 /* AlarmView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F89C7EAE30B1603400996C81 /* AlarmView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,7 +37,6 @@
 		BF1AD3DB631E56689833C63B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CDD7654DCA931623F720E61B /* OhMyMedications.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OhMyMedications.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4DAE31AC8C8F939EF3BFC8A /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
-		F89C7EAE30B1603400996C81 /* AlarmView.swift */ = {isa = PBXFileReference; path = AlarmView.swift; sourceTree = "<group>"; };
 		FE23F14694E08A6FC0F46270 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -64,7 +62,6 @@
 				9204391A9244C0A9E91B4117 /* Reminders.swift */,
 				9C727AD40886B97E0F5A5400 /* ReportsView.swift */,
 				7CB7EC7627E2E5D860E47CAB /* ScheduleView.swift */,
-				F89C7EAE30B1603400996C81 /* AlarmView.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -172,7 +169,6 @@
 				039D717A00A0DC27D5E1D262 /* ReminderPlan.swift in Sources */,
 				998A8172D107E98EA58B2400 /* Reminders.swift in Sources */,
 				3334EFDACA2CE12CA4D04CBC /* ReportsView.swift in Sources */,
-				F89C7EAF30B1603400996C81 /* AlarmView.swift in Sources */,
 				C27C94D9E73DDC4E55682F85 /* ScheduleView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
